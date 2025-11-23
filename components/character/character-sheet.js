@@ -9,6 +9,7 @@ import './components/movement-speed.js'
 import './components/initiative-box.js'
 import './components/hit-points.js'
 import './components/action-economy.js'
+import './components/active-conditions.js'
 import './components/prepared-spells.js'
 import {greyBackground} from "../style/basics.js";
 
@@ -62,6 +63,7 @@ class CharacterSheet extends HTMLElement{
                     <action-economy></action-economy>
                 </div>
                 <div>
+                    <active-conditions></active-conditions>
                     <prepared-spells></prepared-spells>
                 </div>
             </div>

@@ -12,6 +12,7 @@ import {CLASSES, CLAZZ_2_CLASS_MAP} from "./enums/classes.js";
 import {FULL_SPELL_LIST} from "./preload/spells.js";
 import {ACTION_TYPES} from "./actions/base-action.js";
 import {EQUIPMENT_CATALOG} from "./equipment";
+import {CONDITIONS} from "./conditions/base-condtion.js";
 
 export const DATA_MANAGER_FIELDS = {
     CURRENT_HIT_POINTS: 'currentHitPoints',
@@ -20,6 +21,7 @@ export const DATA_MANAGER_FIELDS = {
     USED_SPELL_SLOTS: 'usedSpellSlots',
     PREPARED_SPELLS: 'preparedSpells',
     ACTIONS_AVAILABLE: 'actionsAvailable',
+    ACTIVE_CONDITIONS: 'activeConditions',
 };
 
 /**
@@ -70,6 +72,9 @@ class DataManager{
           [ACTION_TYPES.ACTION]: true,
           [ACTION_TYPES.BONUS_ACTION]: true,
           [ACTION_TYPES.REACTION]: true,
+        },
+        activeConditions: {
+
         }
     }
 
@@ -210,6 +215,16 @@ class DataManager{
             result[clazz] = result[clazz] ? result[clazz]+1 : 1;
         })
         return result;
+    }
+    toggleCondition(conditionName){
+        if(CONDITIONS[conditionName] === undefined){
+            throw new Error(`Unknown condition: ${conditionName}`);
+        }
+        this.character.activeConditions[conditionName] = !this.character.activeConditions[conditionName];
+        this._publish(DATA_MANAGER_FIELDS.ACTIVE_CONDITIONS, {...this.character.activeConditions});
+    }
+    getActiveConditions(){
+        return Object.keys(this.character.activeConditions).filter(cond => this.character.activeConditions[cond]);
     }
     useAction(actionType){
         if(this.character.actionsAvailable[actionType]){
