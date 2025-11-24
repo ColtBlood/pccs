@@ -12,7 +12,7 @@ import {CLASSES, CLAZZ_2_CLASS_MAP} from "./enums/classes.js";
 import {FULL_SPELL_LIST} from "./preload/spells.js";
 import {ACTION_TYPES} from "./actions/base-action.js";
 import {EQUIPMENT_CATALOG} from "./equipment";
-import {CONDITIONS} from "./conditions/base-condition.js";
+import {CONDITION_EFFECTS, CONDITIONS} from "./conditions/base-condition.js";
 
 export const DATA_MANAGER_FIELDS = {
     CURRENT_HIT_POINTS: 'currentHitPoints',
@@ -221,6 +221,9 @@ class DataManager{
             throw new Error(`Unknown condition: ${conditionName}`);
         }
         this.character.activeConditions[conditionName] = !this.character.activeConditions[conditionName];
+        if(this.character.activeConditions[conditionName]){
+            CONDITION_EFFECTS[conditionName]();
+        }
         this._publish(DATA_MANAGER_FIELDS.ACTIVE_CONDITIONS, {...this.character.activeConditions});
     }
     getActiveConditions(){
