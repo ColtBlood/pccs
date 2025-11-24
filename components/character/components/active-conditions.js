@@ -2,7 +2,7 @@ import {buttonBoxes, characterSheetBox} from "../../style/boxes.js";
 import {greyHintBackground, mediumLetters, tableStyles} from "../../style/basics.js";
 import {bindOnClick} from "../../utils/ui.js";
 import {defaultCloseAction, openPopup} from "../../popup/popup-manager.js";
-import {CONDITION_DESCRIPTIONS, CONDITIONS} from "../../data/conditions/base-condtion.js";
+import {CONDITION_DESCRIPTIONS, CONDITIONS} from "../../data/conditions/base-condition.js";
 import {PopupRadio} from "../../popup/components/popup-radio.js";
 import {DATA_MANAGER_FIELDS} from "../../data/data-manager.js";
 
