@@ -1,5 +1,6 @@
 import {EnhancementFormElement} from "../enhancement-form-element.js";
 import {bigLetters, greyBackground, greyLine} from "../../../../style/basics.js";
+import {VANTAGE_TYPES, vantageManager} from "../../../preload/base-mechanics.js";
 
 
 export class VantageFormElement extends EnhancementFormElement{
@@ -8,7 +9,8 @@ export class VantageFormElement extends EnhancementFormElement{
         super(VantageFormElement.expMatcher);
     }
 
-    render(){
+    render({vantageType = VANTAGE_TYPES.SKILL_CHECK} = {}){
+        console.log('====>', vantageType);
         return `
             <style>
                 .vantage-option{
@@ -30,8 +32,8 @@ export class VantageFormElement extends EnhancementFormElement{
                 }
             </style>
             <div class="vantage-option">
-                <label for="adv"><input type="checkbox" name="advantage" id="adv"> Advantage</label>
-                <label for="disadv"><input type="checkbox" name="disadvantage" id="disadv"> Disadvantage</label>
+                <label for="adv"><input type="checkbox" name="advantage" id="adv" ${vantageManager.hasEnforcedAdvantage(vantageType) || vantageManager.hasSuggestedAdvantage(vantageType) ? `checked` : ''} ${vantageManager.hasEnforcedAdvantage(vantageType) ? `disabled` : ''} > Advantage</label>
+                <label for="disadv"><input type="checkbox" name="disadvantage" id="disadv" ${vantageManager.hasEnforcedDisadvantage(vantageType) || vantageManager.hasSuggestedDisadvantage(vantageType) ? `checked` : ''} ${vantageManager.hasEnforcedDisadvantage(vantageType) ? `disabled` : ''} > Disadvantage</label>
             </div>
         `
     }

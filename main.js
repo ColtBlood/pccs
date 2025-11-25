@@ -10,17 +10,20 @@ import './components/popup/popup-manager.js';
 import {SirDixonFire} from "./components/data/preload/sir-dixon-fire.js";
 import {Enhancer} from "./components/data/enhancements/enhancer.js";
 import {BaseVantage} from "./components/data/preload/base-mechanics.js";
+import {LaydenFantail} from "./components/data/preload/layden-fantail.js";
 
 
 class PccsApp extends HTMLElement{
     connectedCallback() {
         window.pccs = {};
         ds.onReady(() => {
+            // ds.loadCharacter('Layden Fantail', (storedChar) => {
             ds.loadCharacter('Sir Dixon Fire', (storedChar) => {
                 console.log('stored char', storedChar);
                 if (storedChar?.baseChar) {
                     dm.deserialize(storedChar);
                 } else {
+                    // dm.loadCharacter(LaydenFantail);
                     dm.loadCharacter(SirDixonFire);
                     dm.persistCharacter();
                 }

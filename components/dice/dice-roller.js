@@ -45,6 +45,7 @@ class diceRoller{
         result.additionalResults = additionalResults;
         result.total = result.mainResult.getResult() + result.additionalResults;
         diceRoll.logOutcome(result);
+        return result;
     }
 
     interprete(diceString){

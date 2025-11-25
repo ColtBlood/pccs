@@ -7,6 +7,7 @@ import {PopupRadio} from "../../popup/components/popup-radio.js";
 import {DiceRoll} from "../../dice/dice-roll.js";
 import {bindOnClick} from "../../utils/ui.js";
 import {prependModifiers} from "../../utils/converters.js";
+import {VANTAGE_TYPES} from "../../data/preload/base-mechanics.js";
 
 class SavingThrows extends HTMLElement{
     constructor() {
@@ -79,7 +80,7 @@ class SavingThrows extends HTMLElement{
                 </ul>
                 <hr>
                 ${enhancers.filter(enhancer => enhancer.formElement).map(enhancer => `
-                    ${enhancer.formElement.render()}
+                    ${enhancer.formElement.render({vantageType: VANTAGE_TYPES.SAVING_THROW})}
                 `).join('')}
             `,
             mainAction: () => {

@@ -1,5 +1,5 @@
 import {bindOnClick} from "../utils/ui.js";
-import {greyHintBackground} from "../style/basics.js";
+import {boldClass, greyHintBackground} from "../style/basics.js";
 
 let groupStartEntry = undefined;
 
@@ -83,6 +83,7 @@ class pccsConsoleRenderer extends HTMLElement{
                     margin-top: -17px;
                     margin-bottom: 7px;
                 }
+                ${boldClass()}
             </style>
             <div class="pccs-console">
                 <ol>

@@ -1,3 +1,12 @@
+import {
+    AttackEnhancer,
+    BaseEnhancer,
+    BaseSelectableEnhancer,
+    Enhancer,
+    MovementSpeedEnhancer, SkillCheckEnhancer
+} from "../enhancements/enhancer.js";
+import {VANTAGE_TYPES, vantageManager} from "../preload/base-mechanics.js";
+
 export const CONDITIONS = {
     "BLINDED": "BLINDED",
     "CHARMED": "CHARMED",
@@ -130,21 +139,80 @@ export const CONDITION_DESCRIPTIONS = {
     `,
 };
 
-export const CONDITION_EFFECTS = {
-    "BLINDED": () => {
+class GrappledEnhancer extends BaseEnhancer{
+    constructor() {
+        super(MovementSpeedEnhancer);
+        this.description = 'Grappled condition'
+    }
 
+    enhanceMovementSpeed = (value) => {
+        return  0;
+    }
+}
+const grappledEnhancer = new GrappledEnhancer();
+
+class RestrainedEnhancer extends BaseEnhancer{
+    constructor() {
+        super(MovementSpeedEnhancer);
+        this.description = 'Restrained condition'
+    }
+
+    enhanceMovementSpeed = (value) => {
+        return  0;
+    }
+}
+const restrainedEnhancer = new RestrainedEnhancer();
+
+class FrightenedEnhancer extends BaseSelectableEnhancer{
+    constructor() {
+        super(AttackEnhancer, SkillCheckEnhancer);
+        this.description = 'Frightened condition (disadvantage on attack rolls and ability checks if source is in sight)';
+        this.forced = true;
+    }
+}
+const frightenedEnhancer = new FrightenedEnhancer();
+
+class BlindedEnhancer extends BaseSelectableEnhancer{
+    constructor() {
+        super(AttackEnhancer, SkillCheckEnhancer);
+        this.description = 'Blinded condition - automatically fails any ability check that requires sight.</li><li>Blinded condition - own attack rolls have disadvantage</li>';
+        this.forced = true;
+    }
+}
+const blindedEnhancer = new BlindedEnhancer();
+
+class DeafenedEnhancer extends BaseSelectableEnhancer{
+    constructor() {
+        super(SkillCheckEnhancer);
+        this.description = 'Deafened condition - automatically fails any ability check that requires hearing.';
+        this.forced = true;
+    }
+}
+const deafenedEnhancer = new DeafenedEnhancer();
+
+
+
+
+export const CONDITION_EFFECTS_START = {
+    "BLINDED": () => {
+        Enhancer.getInstance().registerEnhancer(blindedEnhancer);
+        vantageManager.addEnforcedDisadvantage(VANTAGE_TYPES.ATTACK_ROLL, CONDITIONS.BLINDED);
     },
     "CHARMED": () => {
 
     },
     "DEAFENED": () => {
-
+        Enhancer.getInstance().registerEnhancer(deafenedEnhancer);
     },
     "FRIGHTENED": () => {
-
+        Enhancer.getInstance().registerEnhancer(frightenedEnhancer);
+        // vantageManager.addEnforcedDisadvantage(VANTAGE_TYPES.SKILL_CHECK, CONDITIONS.FRIGHTENED);
+        vantageManager.addSuggestedDisadvantage(VANTAGE_TYPES.SKILL_CHECK, CONDITIONS.FRIGHTENED);
+        vantageManager.addSuggestedDisadvantage(VANTAGE_TYPES.ATTACK_ROLL, CONDITIONS.FRIGHTENED);
     },
     "GRAPPLED": () => {
-
+        Enhancer.getInstance().registerEnhancer(grappledEnhancer);
+        dm.triggerSpeedPublish();
     },
     "INCAPACITATED": () => {
 
@@ -165,13 +233,75 @@ export const CONDITION_EFFECTS = {
 
     },
     "RESTRAINED": () => {
-
+        Enhancer.getInstance().registerEnhancer(restrainedEnhancer);
+        dm.triggerSpeedPublish();
     },
     "STUNNED": () => {
         dm.toggleCondition(CONDITIONS.INCAPACITATED);
     },
     "UNCONSCIOUS": () => {
         dm.toggleCondition(CONDITIONS.INCAPACITATED);
+    },
+    "EXHAUSTION": () => {
+
+    },
+}
+
+export const CONDITION_EFFECTS_END = {
+    "BLINDED": () => {
+        Enhancer.getInstance().unregisterEnhancerByClass(blindedEnhancer);
+        vantageManager.removeEnforcedDisadvantage(VANTAGE_TYPES.ATTACK_ROLL, CONDITIONS.BLINDED);
+    },
+    "CHARMED": () => {
+
+    },
+    "DEAFENED": () => {
+        Enhancer.getInstance().unregisterEnhancerByClass(deafenedEnhancer);
+    },
+    "FRIGHTENED": () => {
+        Enhancer.getInstance().unregisterEnhancerByClass(frightenedEnhancer);
+        vantageManager.removeSuggestedDisadvantage(VANTAGE_TYPES.SKILL_CHECK, CONDITIONS.FRIGHTENED);
+        vantageManager.removeSuggestedDisadvantage(VANTAGE_TYPES.ATTACK_ROLL, CONDITIONS.FRIGHTENED);
+    },
+    "GRAPPLED": () => {
+        Enhancer.getInstance().unregisterEnhancerByClass(grappledEnhancer);
+        dm.triggerSpeedPublish();
+    },
+    "INCAPACITATED": () => {
+
+    },
+    "INVISIBLE": () => {
+
+    },
+    "PARALYZED": () => {
+        if(dm.isConditionActive(CONDITIONS.INCAPACITATED)){
+            dm.toggleCondition(CONDITIONS.INCAPACITATED);
+        }
+    },
+    "PETRIFIED": () => {
+        if(dm.isConditionActive(CONDITIONS.INCAPACITATED)){
+            dm.toggleCondition(CONDITIONS.INCAPACITATED);
+        }
+    },
+    "POISONED": () => {
+
+    },
+    "PRONE": () => {
+
+    },
+    "RESTRAINED": () => {
+        Enhancer.getInstance().unregisterEnhancerByClass(restrainedEnhancer);
+        dm.triggerSpeedPublish();
+    },
+    "STUNNED": () => {
+        if(dm.isConditionActive(CONDITIONS.INCAPACITATED)){
+            dm.toggleCondition(CONDITIONS.INCAPACITATED);
+        }
+    },
+    "UNCONSCIOUS": () => {
+        if(dm.isConditionActive(CONDITIONS.INCAPACITATED)){
+            dm.toggleCondition(CONDITIONS.INCAPACITATED);
+        }
     },
     "EXHAUSTION": () => {
 

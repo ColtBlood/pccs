@@ -1,5 +1,12 @@
 import {STATS} from "./stats.js";
-import {ArmorClassEnhancer, ArmorTrait, BaseEnhancer, Enhancer} from "../enhancements/enhancer.js";
+import {
+    ArmorClassEnhancer,
+    ArmorTrait,
+    BaseEnhancer,
+    Enhancer,
+    InitiativeEnhancer, PassivePerceptionEnhancer,
+    SkillCheckEnhancer
+} from "../enhancements/enhancer.js";
 import {RageAction} from "../actions/barbarian-actions.js";
 import {ACTION_MANAGER} from "../actions/action-manager.js";
 import {
@@ -8,6 +15,7 @@ import {
     FungalInfestationAction,
     SpreadingSporesAction
 } from "../actions/druid-spores-actions.js";
+import {SKILLS} from "./skills.js";
 
 export const CLASSES = {
     'ARTIFICER':'ARTIFICER',
@@ -93,6 +101,55 @@ export class SkillUnarmoredDefense extends BaseEnhancer{
     }
 }
 
+export class JackOfAllTradesEnhancer extends BaseEnhancer {
+    constructor() {
+        super(SkillCheckEnhancer, InitiativeEnhancer, PassivePerceptionEnhancer);
+        this.description = 'Bard: Jack of All Trades - Add half your proficiency bonus, rounded down, to any ability check you make that doesn\'t already include your proficiency bonus.'
+    }
+
+
+
+    enhanceAbilityCheck(value) {
+        if (!abilityCheck.proficient) {
+            return value + Math.floor(dm.getProficiencyBonus() / 2);
+        }
+        return value;
+    }
+}
+
+export class BardClass extends DndClassBase {
+    constructor() {
+        super();
+        this.mainStat = STATS.CHARISMA;
+        this.hitDice = 'd8'
+    }
+
+    decorateClassImprovements(level) {
+        // jack of all traits
+
+        //expertise
+        if(level >= 2){
+            // Enhancer.getInstance().registerEnhancer(new JackOfAllTradesEnhancer());x
+        }
+        if(level >= 3){
+            dm.addExpertise(SKILLS.PERSUASION);
+            dm.addExpertise(SKILLS.INTIMIDATION);
+            // choose two skills
+        }
+    }
+}
+
+export class ClericClass extends DndClassBase {
+    constructor() {
+        super();
+        this.mainStat = STATS.WISDOM;
+        this.hitDice = 'd8'
+    }
+
+    decorateClassImprovements(level) {
+    }
+}
+
 export class DruidClass extends DndClassBase {
     subclass = 'Circle of the Spores';
     spellCasterWeight = 'full';
@@ -136,4 +193,6 @@ export class DruidClass extends DndClassBase {
 export const CLAZZ_2_CLASS_MAP = {
     [CLASSES.BARBARIAN]: new BarbarianClass(),
     [CLASSES.DRUID]: new DruidClass(),
+    [CLASSES.BARD]: new BardClass(),
+    [CLASSES.CLERIC]: new ClericClass(),
 }

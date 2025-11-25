@@ -6,6 +6,7 @@ import {PopupRadio} from '../../popup/components/popup-radio.js'
 import {Enhancer, SkillCheckEnhancer} from "../../data/enhancements/enhancer.js";
 import {DiceRoll} from "../../dice/dice-roll.js";
 import {prependModifiers} from "../../utils/converters.js";
+import {VANTAGE_TYPES} from "../../data/preload/base-mechanics.js";
 
 class SkillChecks extends HTMLElement{
     constructor() {
@@ -77,7 +78,7 @@ class SkillChecks extends HTMLElement{
                 </ul>
                 <hr>
                 ${enhancers.filter(enhancer => enhancer.formElement).map(enhancer => `
-                    ${enhancer.formElement.render()}
+                    ${enhancer.formElement.render({vantageType: VANTAGE_TYPES.SKILL_CHECK})}
                 `).join('')}
             `,
             mainAction: () => {

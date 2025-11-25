@@ -12,7 +12,11 @@ import {CLASSES, CLAZZ_2_CLASS_MAP} from "./enums/classes.js";
 import {FULL_SPELL_LIST} from "./preload/spells.js";
 import {ACTION_TYPES} from "./actions/base-action.js";
 import {EQUIPMENT_CATALOG} from "./equipment";
-import {CONDITION_EFFECTS, CONDITIONS} from "./conditions/base-condition.js";
+import {
+    CONDITION_EFFECTS_END,
+    CONDITION_EFFECTS_START,
+    CONDITIONS
+} from "./conditions/base-condition.js";
 
 export const DATA_MANAGER_FIELDS = {
     CURRENT_HIT_POINTS: 'currentHitPoints',
@@ -22,6 +26,7 @@ export const DATA_MANAGER_FIELDS = {
     PREPARED_SPELLS: 'preparedSpells',
     ACTIONS_AVAILABLE: 'actionsAvailable',
     ACTIVE_CONDITIONS: 'activeConditions',
+    SPEED: 'speed',
 };
 
 /**
@@ -216,13 +221,19 @@ class DataManager{
         })
         return result;
     }
+    isConditionActive(conditionName){
+        return this.character.activeConditions[conditionName] || false;
+    }
     toggleCondition(conditionName){
         if(CONDITIONS[conditionName] === undefined){
             throw new Error(`Unknown condition: ${conditionName}`);
         }
         this.character.activeConditions[conditionName] = !this.character.activeConditions[conditionName];
         if(this.character.activeConditions[conditionName]){
-            CONDITION_EFFECTS[conditionName]();
+            CONDITION_EFFECTS_START[conditionName]();
+        }
+        else{
+            CONDITION_EFFECTS_END[conditionName]();
         }
         this._publish(DATA_MANAGER_FIELDS.ACTIVE_CONDITIONS, {...this.character.activeConditions});
     }
@@ -306,6 +317,10 @@ class DataManager{
     getSpeed(){
         const baseSpeed = this.character.baseChar.details.race.speed;
         return Enhancer.getInstance().enhance(MovementSpeedEnhancer, baseSpeed);
+    }
+
+    triggerSpeedPublish(){
+        this._publish(DATA_MANAGER_FIELDS.SPEED, this.getSpeed());
     }
 
     getHitPointMax(){

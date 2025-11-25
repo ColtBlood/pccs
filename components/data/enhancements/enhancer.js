@@ -10,7 +10,6 @@ export class Enhancer{
     }
 
     registerEnhancer(enhancer){
-        // console.log(enhancer);
         this.enhancers.push(enhancer);
         return this;
     }

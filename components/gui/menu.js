@@ -79,6 +79,10 @@ class PccsMenu extends HTMLElement{
                 displayName: 'd4',
             },
             {
+                value: '6',
+                displayName: 'd6',
+            },
+            {
                 value: '8',
                 displayName: 'd8',
             },

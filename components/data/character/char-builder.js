@@ -22,7 +22,7 @@ export class CharacterBuilder{
     char;
     constructor() {
         this.char = new Character();
-        this.char.baseChar.details.experiencePoints = 'http://www.dnding.nl/';
+        this.char.baseChar.details.experiencePoints = 'unknown';
     }
 
     setCharacterName(name){

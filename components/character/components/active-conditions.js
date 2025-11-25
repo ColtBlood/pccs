@@ -114,7 +114,9 @@ class ActiveConditions extends HTMLElement{
                 const selectedCondition = PopupRadio.getSelectedValueFromPopupRadio();
                 dm.toggleCondition(selectedCondition);
                 defaultCloseAction();
-                this.openConditionInfoBoxPopup(selectedCondition);
+                if(dm.isConditionActive(selectedCondition)){
+                    this.openConditionInfoBoxPopup(selectedCondition);
+                }
             }
         })
     }

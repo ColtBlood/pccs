@@ -1,7 +1,25 @@
 import {singleFieldBoxSquare} from "../../style/boxes.js";
+import {DATA_MANAGER_FIELDS} from "../../data/data-manager.js";
 
 class MovementSpeed extends HTMLElement{
+    constructor() {
+        super();
+        this._unsubMovementSpeed = null;
+    }
+
     connectedCallback(){
+        this._unsubMovementSpeed = dm.subscribe(DATA_MANAGER_FIELDS.SPEED, this.render.bind(this))
+        this.render();
+    }
+
+    disconnectedCallback(){
+        if(this._unsubMovementSpeed){
+            this._unsubMovementSpeed();
+        }
+    }
+
+    render(){
+
         this.innerHTML = `
             <style>
                 ${singleFieldBoxSquare()}
