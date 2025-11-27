@@ -1,10 +1,9 @@
 import '../data-manager.js';
 import {CharacterBuilder} from "../character/char-builder.js";
-import {CLASSES, SkillUnarmoredDefense} from "../enums/classes.js";
+import {CLASSES} from "../enums/classes.js";
 import {STATS} from "../enums/stats.js";
 import {ALIGNMENTS} from "../enums/alignments.js";
 import {SKILLS} from "../enums/skills.js";
-// import {ItemIronLeafOakenShield, ItemLuckStone} from "./equipment.js";
 import {FeatObservant, FeatResilient, FeatSkillExpert} from "./feat.js";
 import {RACES} from "../enums/races.js";
 import {IronLeafOakenShield, LeatherArmor, LuckStone, StaffOfBeekeeping} from "../equipment";

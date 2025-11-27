@@ -6,7 +6,7 @@ class IronLeafOakenShieldEnhancer extends BaseEnhancer {
         super(ArmorClassEnhancer);
         this.description = 'Iron Leaf Oaken Shield: AC: +2 bonus +1 AC also applicable in Wild shape';
     }
-    enhanceArmorClass(value) {
+    enhanceArmorClass({value}) {
         // conditional for wild shape
         return value + 2 + 1;
     }

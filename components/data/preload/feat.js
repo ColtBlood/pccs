@@ -6,8 +6,8 @@ export class FeatObservantEnhancer extends BaseEnhancer{
         this.description = 'Feat Observant: +5 bonus to your passive Wisdom (Perception) and passive Intelligence (Investigation) scores'
     }
 
-    enhancePassivePerception(input){
-        return input+5;
+    enhancePassivePerception({value}){
+        return value+5;
     }
 }
 

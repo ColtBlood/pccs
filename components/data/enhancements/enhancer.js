@@ -24,9 +24,11 @@ export class Enhancer{
     }
 
     enhance(clazz, input){
-        return this
-            .getEnhancersByClass(clazz)
-            .reduce((result, enhancer) => enhancer[BaseEnhancer.enhancerTypes[clazz].method](result), input);
+        this.getEnhancersByClass(clazz)
+            .forEach((enhancer) =>
+                input.value = enhancer[BaseEnhancer.enhancerTypes[clazz].method](input)
+            );
+        return input.value;
     }
 }
 
@@ -77,7 +79,7 @@ export class BaseSelectableEnhancer extends BaseEnhancer{
         super(...types);
         this.forced = false;
         types.forEach(type => {
-            this[BaseEnhancer.enhancerTypes[type].method] = (input) => input;
+            this[BaseEnhancer.enhancerTypes[type].method] = ({value}) => value;
         })
     }
 }

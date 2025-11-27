@@ -1,22 +1,18 @@
 import {getStatNameForSkill, SKILLS} from "./enums/skills.js";
 import {
     ArmorClassEnhancer,
-    BaseEnhancer,
     Enhancer,
-    InitiativeEnhancer, MovementSpeedEnhancer,
+    InitiativeEnhancer,
+    MovementSpeedEnhancer,
     SavingThrowEnhancer
 } from "./enhancements/enhancer.js";
 import {STATS} from "./enums/stats.js";
 import {SPELL_LEVEL} from "./spells/base-spell.js";
 import {CLASSES, CLAZZ_2_CLASS_MAP} from "./enums/classes.js";
 import {FULL_SPELL_LIST} from "./preload/spells.js";
-import {ACTION_TYPES} from "./actions/base-action.js";
 import {EQUIPMENT_CATALOG} from "./equipment";
-import {
-    CONDITION_EFFECTS_END,
-    CONDITION_EFFECTS_START,
-    CONDITIONS
-} from "./conditions/base-condition.js";
+import {CONDITION_EFFECTS_END, CONDITION_EFFECTS_START, CONDITIONS} from "./conditions/base-condition.js";
+import {ACTION_MANAGER} from "./actions/action-manager.js";
 
 export const DATA_MANAGER_FIELDS = {
     CURRENT_HIT_POINTS: 'currentHitPoints',
@@ -73,11 +69,6 @@ class DataManager{
             leveling: [],
             equipment: [] // Add equipment array to character model
         },
-        actionsAvailable: {
-          [ACTION_TYPES.ACTION]: true,
-          [ACTION_TYPES.BONUS_ACTION]: true,
-          [ACTION_TYPES.REACTION]: true,
-        },
         activeConditions: {
 
         }
@@ -132,7 +123,7 @@ class DataManager{
             console.log(`Equipping item from load: ${item}`);
             EQUIPMENT_CATALOG[item].equip();
         })
-        this.resetActionsAvailable()
+        ACTION_MANAGER.resetActionsAvailable()
         this.character.currentHitPoints = this.getHitPointMax();
         this.character.temporaryHitPoints = 0;
         const characterClasses = [...new Set(this.character.baseChar.leveling.map(level => level.clazz))];
@@ -194,7 +185,7 @@ class DataManager{
         const isProficient = this.isProficient(statType);
         const multiplier = (isProficient) ? 1 : 0;
         const result = modifier + (this.getProficiencyBonus() * multiplier);
-        return Enhancer.getInstance().enhance(SavingThrowEnhancer, result)
+        return Enhancer.getInstance().enhance(SavingThrowEnhancer, {value: result})
     }
     getCharacterName(){
         return this.character.baseChar?.details?.name;
@@ -240,25 +231,8 @@ class DataManager{
     getActiveConditions(){
         return Object.keys(this.character.activeConditions).filter(cond => this.character.activeConditions[cond]);
     }
-    useAction(actionType){
-        if(this.character.actionsAvailable[actionType]){
-            this.character.actionsAvailable[actionType] = false;
-            this._publish(DATA_MANAGER_FIELDS.ACTIONS_AVAILABLE, {...this.character.actionsAvailable});
-            return true;
-        }
-        return false;
-    }
-    isActionTypeAvailable(actionType){
-        return this.character.actionsAvailable[actionType] || false;
-    }
-
-    resetActionsAvailable(){
-        this.character.actionsAvailable = {
-            [ACTION_TYPES.ACTION]: true,
-            [ACTION_TYPES.BONUS_ACTION]: true,
-            [ACTION_TYPES.REACTION]: true,
-        }
-        this._publish(DATA_MANAGER_FIELDS.ACTIONS_AVAILABLE, {...this.character.actionsAvailable});
+    publishActionsAvailable(actions){
+        this._publish(DATA_MANAGER_FIELDS.ACTIONS_AVAILABLE, {...actions});
     }
 
     getCharacterLevel(){
@@ -301,22 +275,22 @@ class DataManager{
         return Object.keys(SKILLS).map(skill => {
             const skillValue = this.getSkillModifier({skillName:skill})
 
-            const enhancedResult = Enhancer.getInstance().enhance(SavingThrowEnhancer, skillValue)
+            const enhancedResult = Enhancer.getInstance().enhance(SavingThrowEnhancer, {value: skillValue})
             return {skillName: skill, modifier: enhancedResult, proficient: this.isProficient(skill) || this.isExpert(skill)}
         })
     }
 
     getArmorClass(){
-        return Enhancer.getInstance().enhance(ArmorClassEnhancer, 0);
+        return Enhancer.getInstance().enhance(ArmorClassEnhancer, {value: 0});
     }
 
     getInitiative(){
-        return Enhancer.getInstance().enhance(InitiativeEnhancer, this.getStatModifier(STATS.DEXTERITY));
+        return Enhancer.getInstance().enhance(InitiativeEnhancer, {value: this.getStatModifier(STATS.DEXTERITY)});
     }
 
     getSpeed(){
         const baseSpeed = this.character.baseChar.details.race.speed;
-        return Enhancer.getInstance().enhance(MovementSpeedEnhancer, baseSpeed);
+        return Enhancer.getInstance().enhance(MovementSpeedEnhancer, {value: baseSpeed});
     }
 
     triggerSpeedPublish(){

@@ -84,7 +84,7 @@ class SkillChecks extends HTMLElement{
             mainAction: () => {
                 const selectedSkill = PopupRadio.getSelectedValueFromPopupRadio();
                 const skillModifier = dm.getSkillModifier({skillName: selectedSkill});
-                const enhancedModifier = Enhancer.getInstance().enhance(SkillCheckEnhancer, skillModifier);
+                const enhancedModifier = Enhancer.getInstance().enhance(SkillCheckEnhancer, {value: skillModifier});
                 const diceRoll = new DiceRoll({purpose: `Skill check for ${selectedSkill}`})
                     .addModifier(enhancedModifier);
                 Enhancer.getInstance()

@@ -8,7 +8,7 @@ class LeatherArmorEnhancer extends BaseEnhancer {
         this.traits.push(ArmorTrait);
         this.description = 'Leather armor: AC: 11 + Dex modifier';
     }
-    enhanceArmorClass(value) {
+    enhanceArmorClass({value}) {
         return value + 11 + dm.getStatModifier(STATS.DEXTERITY);
     }
 }

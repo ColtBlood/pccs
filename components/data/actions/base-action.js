@@ -1,10 +1,5 @@
 import {defaultCloseAction, openPopup} from "../../popup/popup-manager.js";
-
-export const ACTION_TYPES = {
-    ACTION: 'ACTION',
-    BONUS_ACTION: 'BONUS_ACTION',
-    REACTION: 'REACTION',
-}
+import {ACTION_MANAGER, ACTION_TYPES} from "./action-manager.js";
 
 export class BaseAction {
     displayName = 'Base Action';
@@ -18,7 +13,7 @@ export class BaseAction {
     execute(){
         const result = this.act();
         // if(result) {
-            dm.useAction(this.type);
+        ACTION_MANAGER.useAction(this.type);
         // }
         defaultCloseAction();
     }

@@ -1,7 +1,8 @@
-import {ACTION_TYPES, BaseAction} from "../actions/base-action.js";
+import {BaseAction} from "./base-action.js";
 import {CLASSES} from "../enums/classes.js";
 import {DiceRoll} from "../../dice/dice-roll.js";
 import {DATA_MANAGER_FIELDS} from "../data-manager.js";
+import {ACTION_TYPES} from "./action-manager.js";
 
 let isSymbioticEntityActive = false;
 

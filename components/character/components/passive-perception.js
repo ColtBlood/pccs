@@ -5,7 +5,8 @@ import {Enhancer, PassivePerceptionEnhancer} from "../../data/enhancements/enhan
 class PassivePerception extends HTMLElement{
     connectedCallback(){
         const perception = dm.getSkillModifier({skillName: SKILLS.PERCEPTION});
-        const passivePerception = 10 + Enhancer.getInstance().getEnhancersByClass(PassivePerceptionEnhancer).reduce((result, enhancer) => enhancer.enhancePassivePerception(result), perception)
+
+        const passivePerception = Enhancer.getInstance().enhance(PassivePerceptionEnhancer, {value: 10+ perception});
         this.innerHTML = `
             <style>
                 ${singleFieldBox()}

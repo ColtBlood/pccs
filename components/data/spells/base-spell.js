@@ -1,6 +1,6 @@
 import {CLASSES} from "../enums/classes.js";
 import {DiceRoll} from "../../dice/dice-roll.js";
-import { ACTION_TYPES } from '../actions/base-action.js';
+import {ACTION_MANAGER, ACTION_TYPES} from '../actions/action-manager.js';
 
 export const SPELL_LEVEL = {
     CANTRIP: 0,
@@ -211,7 +211,7 @@ export class BaseSpell{
         let actionType = this.getActionTypeForCastTime(this.castingTime);
         let actionUsed = false;
         if (actionType) {
-            actionUsed = dm.useAction(actionType);
+            actionUsed = ACTION_MANAGER.useAction(actionType);
             if (!actionUsed) {
                 pccsConsole.log(`<span style="color: darkred">${actionType} already used this turn, cannot cast ${this.spellName}</span>`);
                 return CANT_CAST;

@@ -93,7 +93,7 @@ export class SkillUnarmoredDefense extends BaseEnhancer{
         super(ArmorClassEnhancer);
     }
 
-    enhanceArmorClass(value){
+    enhanceArmorClass({value}){
         if(Enhancer.getInstance().enhancers.find(enhancer => enhancer.traits.includes(ArmorTrait))){
             return value;
         }
@@ -109,7 +109,7 @@ export class JackOfAllTradesEnhancer extends BaseEnhancer {
 
 
 
-    enhanceAbilityCheck(value) {
+    enhanceAbilityCheck({value}) {
         if (!abilityCheck.proficient) {
             return value + Math.floor(dm.getProficiencyBonus() / 2);
         }

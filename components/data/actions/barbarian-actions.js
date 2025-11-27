@@ -1,5 +1,5 @@
-import {ACTION_TYPES, BaseAction} from "../actions/base-action.js";
-import {ACTION_MANAGER} from "./action-manager.js";
+import {BaseAction} from "./base-action.js";
+import {ACTION_TYPES} from "./action-manager.js";
 
 export class RageAction extends BaseAction {
     constructor() {

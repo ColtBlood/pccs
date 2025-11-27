@@ -12,7 +12,7 @@ class LuckStoneEnhancer extends BaseEnhancer {
         );
         this.description = 'Luckstone: +1 bonus to ability checks and saving throws';
     }
-    equipmentEffect = (input) => input + 1;
+    equipmentEffect = ({value}) => value + 1;
     enhanceSavingThrow = this.equipmentEffect;
     enhanceSkillCheck = this.equipmentEffect;
     enhanceInitiative = this.equipmentEffect;

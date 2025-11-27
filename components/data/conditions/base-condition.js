@@ -3,9 +3,10 @@ import {
     BaseEnhancer,
     BaseSelectableEnhancer,
     Enhancer,
-    MovementSpeedEnhancer, SkillCheckEnhancer
+    MovementSpeedEnhancer, SavingThrowEnhancer, SkillCheckEnhancer
 } from "../enhancements/enhancer.js";
 import {VANTAGE_TYPES, vantageManager} from "../preload/base-mechanics.js";
+import {ACTION_MANAGER, ACTION_TYPES} from "../actions/action-manager.js";
 
 export const CONDITIONS = {
     "BLINDED": "BLINDED",
@@ -145,19 +146,19 @@ class GrappledEnhancer extends BaseEnhancer{
         this.description = 'Grappled condition'
     }
 
-    enhanceMovementSpeed = (value) => {
+    enhanceMovementSpeed = () => {
         return  0;
     }
 }
 const grappledEnhancer = new GrappledEnhancer();
 
-class RestrainedEnhancer extends BaseEnhancer{
+class RestrainedEnhancer extends BaseSelectableEnhancer{
     constructor() {
-        super(MovementSpeedEnhancer);
-        this.description = 'Restrained condition'
+        super(MovementSpeedEnhancer, SavingThrowEnhancer);
+        this.description = 'Restrained condition - the creature has disadvantage opn Dexterity saving throws'
     }
 
-    enhanceMovementSpeed = (value) => {
+    enhanceMovementSpeed = () => {
         return  0;
     }
 }
@@ -166,7 +167,7 @@ const restrainedEnhancer = new RestrainedEnhancer();
 class FrightenedEnhancer extends BaseSelectableEnhancer{
     constructor() {
         super(AttackEnhancer, SkillCheckEnhancer);
-        this.description = 'Frightened condition (disadvantage on attack rolls and ability checks if source is in sight)';
+        this.description = 'Frightened condition - disadvantage on attack rolls and ability checks if source is in sight';
         this.forced = true;
     }
 }
@@ -190,6 +191,69 @@ class DeafenedEnhancer extends BaseSelectableEnhancer{
 }
 const deafenedEnhancer = new DeafenedEnhancer();
 
+class InvisibleEnhancer extends BaseSelectableEnhancer{
+    constructor() {
+        super(AttackEnhancer);
+        this.description = "Invisible condition - creature's attack rolls have advantage";
+        this.forced = true;
+    }
+}
+const invisibleEnhancer = new InvisibleEnhancer();
+
+class ParalyzedEnhancer extends BaseSelectableEnhancer{
+    constructor() {
+        super(SavingThrowEnhancer);
+        this.description = "Paralyzed condition - automatically fail Strength and Dexterity saving throws";
+        this.forced = true;
+    }
+}
+const paralyzedEnhancer = new ParalyzedEnhancer();
+
+class PetrifiedEnhancer extends BaseSelectableEnhancer{
+    constructor() {
+        super(SavingThrowEnhancer);
+        this.description = "Petrified condition - automatically fail Strength and Dexterity saving throws";
+        this.forced = true;
+    }
+}
+const petrifiedEnhancer = new PetrifiedEnhancer();
+
+class PoisonedEnhancer extends BaseSelectableEnhancer{
+    constructor() {
+        super(AttackEnhancer, SkillCheckEnhancer);
+        this.description = "Poisoned condition - a poisoned creature has disadvantage on attack rolls and ability checks.";
+        this.forced = true;
+    }
+}
+const poisonedEnhancer = new PoisonedEnhancer();
+
+class ProneEnhancer extends BaseSelectableEnhancer{
+    constructor() {
+        super(AttackEnhancer);
+        this.description = "Prone condition - the creature has disadvantage on attack rolls.";
+        this.forced = true;
+    }
+}
+const proneEnhancer = new ProneEnhancer();
+
+class StunnedEnhancer extends BaseSelectableEnhancer{
+    constructor() {
+        super(SavingThrowEnhancer);
+        this.description = "Stunned condition - the creature automatically fails Strength and Dexterity saving throws.";
+        this.forced = true;
+    }
+}
+const stunnedEnhancer = new StunnedEnhancer();
+
+class UnconsciousEnhancer extends BaseSelectableEnhancer{
+    constructor() {
+        super(SavingThrowEnhancer);
+        this.description = "Unconscious condition - the creature automatically fails Strength and Dexterity saving throws.";
+        this.forced = true;
+    }
+}
+const unconsciousEnhancer = new UnconsciousEnhancer();
+
 
 
 
@@ -206,7 +270,6 @@ export const CONDITION_EFFECTS_START = {
     },
     "FRIGHTENED": () => {
         Enhancer.getInstance().registerEnhancer(frightenedEnhancer);
-        // vantageManager.addEnforcedDisadvantage(VANTAGE_TYPES.SKILL_CHECK, CONDITIONS.FRIGHTENED);
         vantageManager.addSuggestedDisadvantage(VANTAGE_TYPES.SKILL_CHECK, CONDITIONS.FRIGHTENED);
         vantageManager.addSuggestedDisadvantage(VANTAGE_TYPES.ATTACK_ROLL, CONDITIONS.FRIGHTENED);
     },
@@ -215,32 +278,51 @@ export const CONDITION_EFFECTS_START = {
         dm.triggerSpeedPublish();
     },
     "INCAPACITATED": () => {
-
+        ACTION_MANAGER.disableActionType(ACTION_TYPES.ACTION);
+        ACTION_MANAGER.disableActionType(ACTION_TYPES.REACTION);
     },
     "INVISIBLE": () => {
-
+        Enhancer.getInstance().registerEnhancer(invisibleEnhancer);
+        vantageManager.addEnforcedAdvantage(VANTAGE_TYPES.ATTACK_ROLL, CONDITIONS.INVISIBLE);
     },
     "PARALYZED": () => {
-        dm.toggleCondition(CONDITIONS.INCAPACITATED);
+        if(!dm.isConditionActive(CONDITIONS.INCAPACITATED)){
+            dm.toggleCondition(CONDITIONS.INCAPACITATED);
+        }
+        Enhancer.getInstance().registerEnhancer(paralyzedEnhancer);
     },
     "PETRIFIED": () => {
-        dm.toggleCondition(CONDITIONS.INCAPACITATED);
+        if(!dm.isConditionActive(CONDITIONS.INCAPACITATED)){
+            dm.toggleCondition(CONDITIONS.INCAPACITATED);
+        }
+        Enhancer.getInstance().registerEnhancer(petrifiedEnhancer);
     },
     "POISONED": () => {
-
+        vantageManager.addEnforcedDisadvantage(VANTAGE_TYPES.SKILL_CHECK, CONDITIONS.POISONED);
+        vantageManager.addEnforcedDisadvantage(VANTAGE_TYPES.ATTACK_ROLL, CONDITIONS.POISONED);
+        Enhancer.getInstance().registerEnhancer(poisonedEnhancer);
     },
     "PRONE": () => {
-
+        vantageManager.addEnforcedDisadvantage(VANTAGE_TYPES.ATTACK_ROLL, CONDITIONS.PRONE);
+        Enhancer.getInstance().registerEnhancer(proneEnhancer);
     },
     "RESTRAINED": () => {
         Enhancer.getInstance().registerEnhancer(restrainedEnhancer);
         dm.triggerSpeedPublish();
+        vantageManager.addEnforcedDisadvantage(VANTAGE_TYPES.ATTACK_ROLL, CONDITIONS.RESTRAINED);
+        vantageManager.addSuggestedDisadvantage(VANTAGE_TYPES.SAVING_THROW, CONDITIONS.RESTRAINED);
     },
     "STUNNED": () => {
-        dm.toggleCondition(CONDITIONS.INCAPACITATED);
+        if(!dm.isConditionActive(CONDITIONS.INCAPACITATED)){
+            dm.toggleCondition(CONDITIONS.INCAPACITATED);
+        }
+        Enhancer.getInstance().registerEnhancer(stunnedEnhancer);
     },
     "UNCONSCIOUS": () => {
-        dm.toggleCondition(CONDITIONS.INCAPACITATED);
+        if(!dm.isConditionActive(CONDITIONS.INCAPACITATED)){
+            dm.toggleCondition(CONDITIONS.INCAPACITATED);
+        }
+        Enhancer.getInstance().registerEnhancer(unconsciousEnhancer);
     },
     "EXHAUSTION": () => {
 
@@ -268,37 +350,48 @@ export const CONDITION_EFFECTS_END = {
         dm.triggerSpeedPublish();
     },
     "INCAPACITATED": () => {
-
+        ACTION_MANAGER.enableActionType(ACTION_TYPES.ACTION);
+        ACTION_MANAGER.enableActionType(ACTION_TYPES.REACTION);
     },
     "INVISIBLE": () => {
-
+        Enhancer.getInstance().unregisterEnhancerByClass(invisibleEnhancer);
+        vantageManager.removeEnforcedAdvantage(VANTAGE_TYPES.ATTACK_ROLL, CONDITIONS.INVISIBLE);
     },
     "PARALYZED": () => {
+        Enhancer.getInstance().unregisterEnhancerByClass(paralyzedEnhancer);
         if(dm.isConditionActive(CONDITIONS.INCAPACITATED)){
             dm.toggleCondition(CONDITIONS.INCAPACITATED);
         }
     },
     "PETRIFIED": () => {
+        Enhancer.getInstance().unregisterEnhancerByClass(petrifiedEnhancer);
         if(dm.isConditionActive(CONDITIONS.INCAPACITATED)){
             dm.toggleCondition(CONDITIONS.INCAPACITATED);
         }
     },
     "POISONED": () => {
-
+        Enhancer.getInstance().unregisterEnhancerByClass(poisonedEnhancer);
+        vantageManager.removeEnforcedDisadvantage(VANTAGE_TYPES.SKILL_CHECK, CONDITIONS.POISONED);
+        vantageManager.removeEnforcedDisadvantage(VANTAGE_TYPES.ATTACK_ROLL, CONDITIONS.POISONED);
     },
     "PRONE": () => {
-
+        Enhancer.getInstance().unregisterEnhancerByClass(proneEnhancer);
+        vantageManager.removeEnforcedDisadvantage(VANTAGE_TYPES.ATTACK_ROLL, CONDITIONS.PRONE);
     },
     "RESTRAINED": () => {
         Enhancer.getInstance().unregisterEnhancerByClass(restrainedEnhancer);
         dm.triggerSpeedPublish();
+        vantageManager.removeEnforcedDisadvantage(VANTAGE_TYPES.SAVING_THROW, CONDITIONS.RESTRAINED);
+        vantageManager.removeEnforcedDisadvantage(VANTAGE_TYPES.ATTACK_ROLL, CONDITIONS.RESTRAINED);
     },
     "STUNNED": () => {
+        Enhancer.getInstance().unregisterEnhancerByClass(stunnedEnhancer);
         if(dm.isConditionActive(CONDITIONS.INCAPACITATED)){
             dm.toggleCondition(CONDITIONS.INCAPACITATED);
         }
     },
     "UNCONSCIOUS": () => {
+        Enhancer.getInstance().unregisterEnhancerByClass(unconsciousEnhancer);
         if(dm.isConditionActive(CONDITIONS.INCAPACITATED)){
             dm.toggleCondition(CONDITIONS.INCAPACITATED);
         }

@@ -4,14 +4,15 @@ import {
     boldClass,
     greyBackground,
     greyHintBackground,
-    greyLine, italicClass,
-    mediumLetters, tableStyles
+    italicClass,
+    mediumLetters,
+    tableStyles
 } from "../../style/basics.js";
 import {bindOnClick} from "../../utils/ui.js";
 import {defaultCloseAction, getOpenPopup, openPopup} from "../../popup/popup-manager.js";
 import {FULL_SPELL_LIST} from "../../data/preload/spells.js";
-import { DATA_MANAGER_FIELDS } from '../../data/data-manager.js';
-import {ACTION_TYPES} from "../../data/actions/base-action.js";
+import {DATA_MANAGER_FIELDS} from '../../data/data-manager.js';
+import {ACTION_MANAGER, ACTION_TYPES} from "../../data/actions/action-manager.js";
 
 class PreparedSpells extends HTMLElement{
     constructor() {
@@ -42,7 +43,7 @@ class PreparedSpells extends HTMLElement{
         const usedSpellSlots = dm.getUsedSpellSlots();
 
         // Get available action types
-        const availableActionTypes = Object.keys(ACTION_TYPES).filter(type => dm.isActionTypeAvailable(type));
+        const availableActionTypes = Object.keys(ACTION_TYPES).filter(type => ACTION_MANAGER.isActionTypeAvailable(type));
 
         const mapping = [
             {id: 'edit-prepared-spells', funct: this.openEditPreparedSpellsPopup},

@@ -1,18 +1,8 @@
 import {buttonBoxes, characterSheetBox} from "../../style/boxes.js";
-import {
-    greyBackground,
-    greyHintBackground,
-    greyLine,
-    greyLineHint,
-    mediumLetters,
-    smallLetters
-} from "../../style/basics.js";
+import {mediumLetters} from "../../style/basics.js";
 import {bindOnClick} from "../../utils/ui.js";
-import {defaultCloseAction, openPopup} from "../../popup/popup-manager.js";
-import {PopupRadio} from '../../popup/components/popup-radio.js'
-import {ACTION_MANAGER} from "../../data/actions/action-manager.js";
-import {ACTION_TYPES} from "../../data/actions/base-action.js";
-import { DATA_MANAGER_FIELDS } from '../../data/data-manager.js';
+import {ACTION_MANAGER, ACTION_TYPES} from "../../data/actions/action-manager.js";
+import {DATA_MANAGER_FIELDS} from '../../data/data-manager.js';
 
 class ActionEconomy extends HTMLElement{
     constructor() {
@@ -31,9 +21,9 @@ class ActionEconomy extends HTMLElement{
     render() {
         const mapping = [];
         const sections = [
-            { title: 'Actions', list: ACTION_MANAGER.getActions(), actionAvailable: dm.isActionTypeAvailable(ACTION_TYPES.ACTION)},
-            { title: 'Bonus Actions', list: ACTION_MANAGER.getBonusActions(), actionAvailable: dm.isActionTypeAvailable(ACTION_TYPES.BONUS_ACTION) },
-            { title: 'Reactions', list: ACTION_MANAGER.getReactions(), actionAvailable: dm.isActionTypeAvailable(ACTION_TYPES.REACTION) },
+            { title: 'Actions', list: ACTION_MANAGER.getActions(), actionAvailable: ACTION_MANAGER.isActionTypeAvailable(ACTION_TYPES.ACTION), actionDisabled: ACTION_MANAGER.isActionTypeDisabled(ACTION_TYPES.ACTION)},
+            { title: 'Bonus Actions', list: ACTION_MANAGER.getBonusActions(), actionAvailable: ACTION_MANAGER.isActionTypeAvailable(ACTION_TYPES.BONUS_ACTION), actionDisabled: ACTION_MANAGER.isActionTypeDisabled(ACTION_TYPES.BONUS_ACTION)},
+            { title: 'Reactions', list: ACTION_MANAGER.getReactions(), actionAvailable: ACTION_MANAGER.isActionTypeAvailable(ACTION_TYPES.REACTION), actionDisabled: ACTION_MANAGER.isActionTypeDisabled(ACTION_TYPES.REACTION)},
         ];
         this.shadowRoot.innerHTML = `
             <style>
@@ -47,11 +37,17 @@ class ActionEconomy extends HTMLElement{
                     border: 1px solid black;
                     margin-left: 3px;
                 }
-                .used {
-                    background-color: rgba(147,11,39,0.5);
-                    border: 4px solid rgba(253,4,51,0.5);
+                .used, .disabled {
                     height: 5px;
                     width: 5px;
+                }
+                .used {
+                    background-color: rgba(158,158,158,0.5);
+                    border: 4px solid rgba(255,255,255,0.5);
+                }
+                .disabled {
+                    background-color: rgba(147,11,39,0.5);
+                    border: 4px solid rgba(253,4,51,0.5);
                 }
                 .action-slot-row {
                     display:flex;
@@ -76,19 +72,20 @@ class ActionEconomy extends HTMLElement{
             <div class="cs-box actions-list">
                 <div class="action-wrapper">
                     ${sections.map(section => `
-                        <div class="action-slot-row">${section.title}: <div class="action-slot ${section.actionAvailable ? '' : 'used'}"></div></div>
+                        <div class="action-slot-row">${section.title}: <div class="action-slot ${section.actionAvailable ? '' : 'used'} ${section.actionDisabled ? 'disabled' : ''}"></div></div>
                     `).join('')}
                 </div>
                 <div class="button-box center" id="reset-actions">Reset</div>
                 <div>
-                    ${sections.filter(section => section.actionAvailable).map(section => `
+                    ${sections.filter(section => section.actionAvailable)
+                        .map(section => `
                         <div class="title">-- ${section.title} --</div>
                         <div>
                             ${section.list.map((action, idx) => {
-            const elementId = `${section.title.toLowerCase().replace(/ /g, '-')}-action-${idx}`;
-            mapping.push({id: elementId, funct: () => action.openActionPopup()});
-            return `<div class="button-box" id="${elementId}">${action.displayName}</div>`;
-        }).join('')}
+                                const elementId = `${section.title.toLowerCase().replace(/ /g, '-')}-action-${idx}`;
+                                mapping.push({id: elementId, funct: () => action.openActionPopup()});
+                                return `<div class="button-box" id="${elementId}">${action.displayName}</div>`;
+                            }).join('')}
                         </div>
                     `).join('')}
                 </div>
@@ -96,7 +93,7 @@ class ActionEconomy extends HTMLElement{
             </div>
         `;
         bindOnClick(this, [
-            {id: 'reset-actions', funct: () => { dm.resetActionsAvailable(); this.render(); }},
+            {id: 'reset-actions', funct: () => { ACTION_MANAGER.resetActionsAvailable(); this.render(); }},
             ...mapping
         ]);
     }
