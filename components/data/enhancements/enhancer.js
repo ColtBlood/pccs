@@ -10,6 +10,7 @@ export class Enhancer{
     }
 
     registerEnhancer(enhancer){
+        console.log(enhancer);
         this.enhancers.push(enhancer);
         return this;
     }
@@ -24,9 +25,12 @@ export class Enhancer{
     }
 
     enhance(clazz, input){
+        console.log(`Enhancing ${clazz} with input:`, input);
         this.getEnhancersByClass(clazz)
-            .forEach((enhancer) =>
-                input.value = enhancer[BaseEnhancer.enhancerTypes[clazz].method](input)
+            .forEach((enhancer) => {
+                console.log(enhancer);
+                    input.value = enhancer[BaseEnhancer.enhancerTypes[clazz].method](input);
+                }
             );
         return input.value;
     }

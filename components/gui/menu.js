@@ -3,6 +3,7 @@ import {bindOnClick} from "../utils/ui.js";
 import {greyHintBackground, greyLine} from "../style/basics.js";
 import {PopupRadio} from "../popup/components/popup-radio.js";
 import {DiceRoll} from "../dice/dice-roll.js";
+import {characterMapping} from "../data/preload/characters.js";
 
 class PccsMenu extends HTMLElement{
     isCollapsed = true;
@@ -17,7 +18,26 @@ class PccsMenu extends HTMLElement{
             itemText: 'Empty database',
             funct: () => this.emptyDatabase(),
         },
+        {
+            id: 'void',
+            itemText: '&nbsp;',
+            funct: () => {},
+        },
+        {
+            id: 'void2',
+            itemText: 'Swap characters',
+            funct: () => {},
+        },
+        ...Object.keys(characterMapping).map(key => {
+            return {
+                id: key,
+                itemText: `- ${key}`,
+                funct: () => window.location = '?character=' + encodeURIComponent(key),
+            }
+        })
     ]
+
+
 
     constructor() {
         super();

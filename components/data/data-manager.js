@@ -4,7 +4,7 @@ import {
     Enhancer,
     InitiativeEnhancer,
     MovementSpeedEnhancer,
-    SavingThrowEnhancer
+    SavingThrowEnhancer, SkillCheckEnhancer
 } from "./enhancements/enhancer.js";
 import {STATS} from "./enums/stats.js";
 import {SPELL_LEVEL} from "./spells/base-spell.js";
@@ -275,7 +275,7 @@ class DataManager{
         return Object.keys(SKILLS).map(skill => {
             const skillValue = this.getSkillModifier({skillName:skill})
 
-            const enhancedResult = Enhancer.getInstance().enhance(SavingThrowEnhancer, {value: skillValue})
+            const enhancedResult = Enhancer.getInstance().enhance(SkillCheckEnhancer, {value: skillValue, isProficient: this.isProficient(skill), isExpert: this.isExpert(skill)});
             return {skillName: skill, modifier: enhancedResult, proficient: this.isProficient(skill) || this.isExpert(skill)}
         })
     }

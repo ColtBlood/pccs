@@ -42,6 +42,4 @@ export const SirDixonFire = new CharacterBuilder()
     .addEquipment(LuckStone.name)
     .addEquipment(IronLeafOakenShield.name)
     .addEquipment(LeatherArmor.name)
-    .addEquipment(StaffOfBeekeeping.name)
-    .build();
-
+    .addEquipment(StaffOfBeekeeping.name);

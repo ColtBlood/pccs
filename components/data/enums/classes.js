@@ -107,14 +107,16 @@ export class JackOfAllTradesEnhancer extends BaseEnhancer {
         this.description = 'Bard: Jack of All Trades - Add half your proficiency bonus, rounded down, to any ability check you make that doesn\'t already include your proficiency bonus.'
     }
 
-
-
-    enhanceAbilityCheck({value}) {
-        if (!abilityCheck.proficient) {
+    _enhancement({value, isProficient, isExpert}) {
+        if (!isProficient && !isExpert) {
             return value + Math.floor(dm.getProficiencyBonus() / 2);
         }
         return value;
     }
+
+    enhanceSkillCheck = this._enhancement;
+    enhanceInitiative = this._enhancement;
+    enhancePassivePerception = this._enhancement;
 }
 
 export class BardClass extends DndClassBase {
@@ -125,11 +127,8 @@ export class BardClass extends DndClassBase {
     }
 
     decorateClassImprovements(level) {
-        // jack of all traits
-
-        //expertise
         if(level >= 2){
-            // Enhancer.getInstance().registerEnhancer(new JackOfAllTradesEnhancer());x
+            Enhancer.getInstance().registerEnhancer(new JackOfAllTradesEnhancer());
         }
         if(level >= 3){
             dm.addExpertise(SKILLS.PERSUASION);

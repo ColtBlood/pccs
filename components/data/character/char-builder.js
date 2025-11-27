@@ -109,13 +109,14 @@ export class CharacterBuilder{
     }
 
     addEnhancer(enhancer){
-        Enhancer.getInstance()
-            .registerEnhancer(enhancer);
+        if (!this._pendingEnhancers) this._pendingEnhancers = [];
+        this._pendingEnhancers.push(enhancer);
         return this;
     }
 
     addFeat(feat){
-        feat.register(this);
+        if (!this._pendingFeats) this._pendingFeats = [];
+        this._pendingFeats.push(feat);
         return this;
     }
 
@@ -125,6 +126,18 @@ export class CharacterBuilder{
     }
 
     build(){
+        if (this._pendingEnhancers && this._pendingEnhancers.length > 0) {
+            this._pendingEnhancers.forEach(enhancer => {
+                Enhancer.getInstance().registerEnhancer(enhancer);
+            });
+            this._pendingEnhancers = [];
+        }
+        if (this._pendingFeats && this._pendingFeats.length > 0) {
+            this._pendingFeats.forEach(feat => {
+                feat.register(this);
+            });
+            this._pendingFeats = [];
+        }
         return this.char;
     }
 }
