@@ -18,11 +18,9 @@ class PccsApp extends HTMLElement{
             const urlParams = new URLSearchParams(window.location.search);
             const characterName = urlParams.get('character') || 'Sir Dixon Fire';
 
-            console.log('characterName', characterName);
 
             // ds.loadCharacter('Layden Fantail', (storedChar) => {
             ds.loadCharacter(characterName, (storedChar) => {
-                console.log('stored char', storedChar);
                 if (storedChar?.baseChar) {
                     dm.deserialize(storedChar);
                 } else {

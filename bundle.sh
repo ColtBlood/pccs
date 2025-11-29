@@ -1,4 +1,3 @@
-rm target/bundled.js
 rm target/index-bundled.html
 esbuild main.js --bundle --outfile=target/bundled.js
 

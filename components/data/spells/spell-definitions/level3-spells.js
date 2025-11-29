@@ -44,26 +44,6 @@ If you are outdoors in stormy conditions when you cast this spell, the spell giv
     }
 }
 
-export class SpellDaylight extends BaseSpell{
-    constructor() {
-        super({
-            spellName: "Daylight",
-            description: `
-            A 60-foot-radius sphere of light spreads out from a point you choose within range. The sphere is bright light and sheds dim light for an additional 60 feet.<br />
-<br />
-If you chose a point on an object you are holding or one that isn’t being worn or carried, the light shines from the object with and moves with it. Completely covering the affected object with an opaque object, such as a bowl or a helm, blocks the light.<br />
-<br />
-If any of this spell’s area overlaps with an area of darkness created by a spell of 3rd level or lower, the spell that created the darkness is dispelled.<br />
-            `,
-            spellLevel: SPELL_LEVEL.LEVEL_3,
-            range: RANGE.FEET60,
-            components: COMPONENTS.VS(),
-            duration: DURATION.ONE_HOUR,
-            classes: [CLASSES.CLERIC, CLASSES.DRUID, CLASSES.PALADIN, CLASSES.RANGER, CLASSES.SORCERER],
-        });
-    }
-}
-
 export class SpellConjureAnimals extends BaseSpell{
     constructor() {
         super({
@@ -92,22 +72,22 @@ The summoned creatures are friendly to you and your companions. Roll initiative 
     }
 }
 
-export class SpellGaseousForm extends BaseSpell{
+export class SpellDaylight extends BaseSpell{
     constructor() {
         super({
-            spellName: "Gaseous Form",
+            spellName: "Daylight",
             description: `
-You transform a willing creature you touch, along with everything it’s wearing and carrying, into a misty cloud for the duration. The spell ends if the creature drops to 0 hit points. An incorporeal creature isn’t affected.<br />
+            A 60-foot-radius sphere of light spreads out from a point you choose within range. The sphere is bright light and sheds dim light for an additional 60 feet.<br />
 <br />
-While in this form, the target’s only method of movement is a flying speed of 10 feet. The target can enter and occupy the space of another creature. The target has resistance to nonmagical damage, and it has advantage on Strength, Dexterity, and Constitution saving throws. The target can pass through small holes, narrow openings, and even mere cracks, though it treats liquids as though they were solid surfaces. The target can’t fall and remains hovering in the air even when stunned or otherwise incapacitated.<br />
+If you chose a point on an object you are holding or one that isn’t being worn or carried, the light shines from the object with and moves with it. Completely covering the affected object with an opaque object, such as a bowl or a helm, blocks the light.<br />
 <br />
-While in the form of a misty cloud, the target can’t talk or manipulate objects, and any objects it was carrying or holding can’t be dropped, used, or otherwise interacted with. The target can’t attack or cast spells.
+If any of this spell’s area overlaps with an area of darkness created by a spell of 3rd level or lower, the spell that created the darkness is dispelled.<br />
             `,
             spellLevel: SPELL_LEVEL.LEVEL_3,
-            componentMaterial: 'a bit of gauze and a wisp of smoke',
-            concentration: true,
-            classes: [CLASSES.SORCERER, CLASSES.WARLOCK, CLASSES.WIZARD],
+            range: RANGE.FEET60,
+            components: COMPONENTS.VS(),
             duration: DURATION.ONE_HOUR,
+            classes: [CLASSES.CLERIC, CLASSES.DRUID, CLASSES.PALADIN, CLASSES.RANGER, CLASSES.SORCERER],
         });
     }
 }
@@ -128,6 +108,26 @@ Choose any creature, object, or magical effect within range. Any spell of 3rd le
     }
 }
 
+export class SpellGaseousForm extends BaseSpell{
+    constructor() {
+        super({
+            spellName: "Gaseous Form",
+            description: `
+You transform a willing creature you touch, along with everything it’s wearing and carrying, into a misty cloud for the duration. The spell ends if the creature drops to 0 hit points. An incorporeal creature isn’t affected.<br />
+<br />
+While in this form, the target’s only method of movement is a flying speed of 10 feet. The target can enter and occupy the space of another creature. The target has resistance to nonmagical damage, and it has advantage on Strength, Dexterity, and Constitution saving throws. The target can pass through small holes, narrow openings, and even mere cracks, though it treats liquids as though they were solid surfaces. The target can’t fall and remains hovering in the air even when stunned or otherwise incapacitated.<br />
+<br />
+While in the form of a misty cloud, the target can’t talk or manipulate objects, and any objects it was carrying or holding can’t be dropped, used, or otherwise interacted with. The target can’t attack or cast spells.
+            `,
+            spellLevel: SPELL_LEVEL.LEVEL_3,
+            componentMaterial: 'a bit of gauze and a wisp of smoke',
+            concentration: true,
+            classes: [CLASSES.SORCERER, CLASSES.WARLOCK, CLASSES.WIZARD],
+            duration: DURATION.ONE_HOUR,
+        });
+    }
+}
+
 export class SpellRevivify extends BaseSpell{
     constructor() {
         super({
@@ -138,6 +138,25 @@ You touch a creature that has died within the last minute. That creature returns
             spellLevel: SPELL_LEVEL.LEVEL_3,
             componentMaterial: 'diamonds worth 300 gp, which the spell consumes',
             classes: [CLASSES.ARTIFICER, CLASSES.CLERIC, CLASSES.DRUID, CLASSES.PALADIN, CLASSES.RANGER],
+        });
+    }
+}
+
+export class SpellWallOfWater extends BaseSpell{
+    constructor() {
+        super({
+            spellName: "Wall of Water",
+            description: `
+You conjure up a wall of water on the ground at a point you can see within range. You can make the wall up to 30 feet long, 10 feet high, and 1 foot thick, or you can make a ringed wall up to 20 feet in diameter, 20 feet high, and 1 foot thick. The wall vanishes when the spell ends. The wall’s space is difficult terrain.<br />
+<br />
+Any ranged weapon attack that enters the wall’s space has disadvantage on the attack roll, and fire damage is halved if the fire effect passes through the wall to reach its target. Spells that deal cold damage that pass through the wall cause the area of the wall they pass through to freeze solid (at least a 5-foot square section is frozen). Each 5-foot-square frozen section has AC 5 and 15 hit points. Reducing a frozen section to 0 hit points destroys it. When a section is destroyed, the wall’s water doesn’t fill it.<br />
+            `,
+            spellLevel: SPELL_LEVEL.LEVEL_3,
+            componentMaterial: 'a drop of water',
+            classes: [CLASSES.DRUID, CLASSES.SORCERER, CLASSES.WIZARD],
+            range: RANGE.FEET60,
+            concentration: true,
+            duration: DURATION.MINUTES10,
         });
     }
 }
