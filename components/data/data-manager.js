@@ -9,7 +9,7 @@ import {
 import {STATS} from "./enums/stats.js";
 import {SPELL_LEVEL} from "./spells/base-spell.js";
 import {CLASSES, CLAZZ_2_CLASS_MAP} from "./enums/classes.js";
-import {FULL_SPELL_LIST} from "./preload/spells.js";
+import {FULL_SPELL_LIST} from "./spells/spells.js";
 import {EQUIPMENT_CATALOG} from "./equipment";
 import {CONDITION_EFFECTS_END, CONDITION_EFFECTS_START, CONDITIONS} from "./conditions/base-condition.js";
 import {ACTION_MANAGER} from "./actions/action-manager.js";

@@ -10,7 +10,7 @@ import {
 } from "../../style/basics.js";
 import {bindOnClick} from "../../utils/ui.js";
 import {defaultCloseAction, getOpenPopup, openPopup} from "../../popup/popup-manager.js";
-import {FULL_SPELL_LIST} from "../../data/preload/spells.js";
+import {FULL_SPELL_LIST} from "../../data/spells/spells.js";
 import {DATA_MANAGER_FIELDS} from '../../data/data-manager.js';
 import {ACTION_MANAGER, ACTION_TYPES} from "../../data/actions/action-manager.js";
 

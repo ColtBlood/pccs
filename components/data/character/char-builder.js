@@ -3,7 +3,6 @@ import {CLASSES, CLAZZ_2_CLASS_MAP} from "../enums/classes.js";
 import {STATS} from "../enums/stats.js";
 import {SKILLS} from "../enums/skills.js";
 import {Enhancer} from "../enhancements/enhancer.js";
-import {FULL_SPELL_LIST} from "../preload/spells.js";
 
 class Character {
     baseChar= {
