@@ -254,8 +254,45 @@ class UnconsciousEnhancer extends BaseSelectableEnhancer{
 }
 const unconsciousEnhancer = new UnconsciousEnhancer();
 
+class ExhaustionLevel1Enhancer extends BaseSelectableEnhancer {
+    constructor() {
+        super(SkillCheckEnhancer);
+        this.description = 'Exhaustion level 1: Disadvantage on ability checks';
+        this.forced = true;
+    }
+}
+const exhaustionLevel1Enhancer = new ExhaustionLevel1Enhancer();
 
+class ExhaustionSpeedHalvedEnhancer extends BaseEnhancer {
+    constructor() {
+        super(MovementSpeedEnhancer);
+        this.description = 'Exhaustion level 2: Speed halved';
+    }
+    enhanceMovementSpeed({value: speed}) {
+        return speed / 2;
+    }
+}
+const exhaustionSpeedHalvedEnhancer = new ExhaustionSpeedHalvedEnhancer();
 
+class ExhaustionLevel3Enhancer extends BaseSelectableEnhancer {
+    constructor() {
+        super(SavingThrowEnhancer, AttackEnhancer);
+        this.description = 'Exhaustion level 3: Disadvantage on attack rolls and saving throws';
+        this.forced = true;
+    }
+}
+const exhaustionLevel3Enhancer = new ExhaustionLevel3Enhancer();
+
+class ExhaustionSpeedZeroEnhancer extends BaseEnhancer {
+    constructor() {
+        super(MovementSpeedEnhancer);
+        this.description = 'Exhaustion level 5: Speed reduced to 0';
+    }
+    enhanceMovementSpeed({value: speed}) {
+        return 0;
+    }
+}
+const exhaustionSpeedZeroEnhancer = new ExhaustionSpeedZeroEnhancer();
 
 export const CONDITION_EFFECTS_START = {
     "BLINDED": () => {
@@ -324,8 +361,36 @@ export const CONDITION_EFFECTS_START = {
         }
         Enhancer.getInstance().registerEnhancer(unconsciousEnhancer);
     },
-    "EXHAUSTION": () => {
+    "EXHAUSTION": (level = 1) => {
+        CONDITION_EFFECTS_END.EXHAUSTION();
+        if (level >= 1) {
+            vantageManager.addEnforcedDisadvantage(VANTAGE_TYPES.SKILL_CHECK, CONDITIONS.EXHAUSTION);
+            Enhancer.getInstance().registerEnhancer(exhaustionLevel1Enhancer);
+        }
+        if (level >= 2) {
+            Enhancer.getInstance().registerEnhancer(exhaustionSpeedHalvedEnhancer);
+        }
+        if (level >= 3) {
+            vantageManager.addEnforcedDisadvantage(VANTAGE_TYPES.ATTACK_ROLL, CONDITIONS.EXHAUSTION);
+            vantageManager.addEnforcedDisadvantage(VANTAGE_TYPES.SAVING_THROW, CONDITIONS.EXHAUSTION);
+            Enhancer.getInstance().registerEnhancer(exhaustionLevel3Enhancer);
+        }
+        if (level >= 4) {
+            const maxHp = dm.getHitPointMax();
 
+            const currentHp = dm.getCurrentHitPoints();
+            const newMaxHp = Math.floor(maxHp / 2);
+            let newCurrentHp = currentHp;
+            if (currentHp > newMaxHp) {
+                newCurrentHp = newMaxHp;
+            }
+            dm.overwriteMaxHP(newMaxHp);
+            dm.setCurrentHitPoints(newCurrentHp);
+        }
+        if (level >= 5) {
+            Enhancer.getInstance().registerEnhancer(exhaustionSpeedZeroEnhancer);
+        }
+        dm.triggerSpeedPublish();
     },
 }
 
@@ -397,6 +462,14 @@ export const CONDITION_EFFECTS_END = {
         }
     },
     "EXHAUSTION": () => {
-
+        vantageManager.removeEnforcedDisadvantage(VANTAGE_TYPES.SKILL_CHECK, CONDITIONS.EXHAUSTION);
+        vantageManager.removeEnforcedDisadvantage(VANTAGE_TYPES.ATTACK_ROLL, CONDITIONS.EXHAUSTION);
+        vantageManager.removeEnforcedDisadvantage(VANTAGE_TYPES.SAVING_THROW, CONDITIONS.EXHAUSTION);
+        Enhancer.getInstance().unregisterEnhancerByClass(exhaustionLevel1Enhancer);
+        Enhancer.getInstance().unregisterEnhancerByClass(exhaustionSpeedHalvedEnhancer);
+        Enhancer.getInstance().unregisterEnhancerByClass(exhaustionLevel3Enhancer);
+        dm.resetOverwriteMaxHP();
+        Enhancer.getInstance().unregisterEnhancerByClass(exhaustionSpeedZeroEnhancer);
+        dm.triggerSpeedPublish();
     },
 }

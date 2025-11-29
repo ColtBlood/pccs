@@ -147,9 +147,9 @@ class DataManager{
             temporaryHitPoints: this.getTemporaryHitPoints(),
             preparedSpells: this.getSpells().filter(spell => spell.isPrepared).map(spell => spell.spellName),
             concentration: this.character.concentration,
+            overwrittenMaxHP: this.character.overwrittenMaxHP,
         };
     }
-
     deserialize(data) {
         // Restore base character structure
         const character = {
@@ -163,6 +163,7 @@ class DataManager{
             temporaryHitPoints: data.temporaryHitPoints,
             concentration: data.concentration,
             spellList: data.spellList,
+            overwrittenMaxHP: data.overwrittenMaxHP,
         };
         this.loadCharacter(character);
         this.getSpells().forEach((spell) => {spell.isPrepared = data.preparedSpells.includes(spell.spellName);})
@@ -212,24 +213,55 @@ class DataManager{
         })
         return result;
     }
+    getExhaustionLevel() {
+        return this.character.activeConditions[CONDITIONS.EXHAUSTION] || 0;
+    }
+    setExhaustionLevel(level) {
+        if (level < 1) level = 1;
+        if (level > 6) level = 6;
+        this.character.activeConditions[CONDITIONS.EXHAUSTION] = level;
+        CONDITION_EFFECTS_START[CONDITIONS.EXHAUSTION](level);
+        this._publish(DATA_MANAGER_FIELDS.ACTIVE_CONDITIONS, {...this.character.activeConditions});
+        this.persistCharacter();
+    }
     isConditionActive(conditionName){
+        if(conditionName === CONDITIONS.EXHAUSTION) {
+            return !!this.character.activeConditions[CONDITIONS.EXHAUSTION];
+        }
         return this.character.activeConditions[conditionName] || false;
     }
     toggleCondition(conditionName){
         if(CONDITIONS[conditionName] === undefined){
             throw new Error(`Unknown condition: ${conditionName}`);
         }
-        this.character.activeConditions[conditionName] = !this.character.activeConditions[conditionName];
-        if(this.character.activeConditions[conditionName]){
-            CONDITION_EFFECTS_START[conditionName]();
-        }
-        else{
-            CONDITION_EFFECTS_END[conditionName]();
+        if(conditionName === CONDITIONS.EXHAUSTION) {
+            // Toggle between 0 and 1
+            if(this.character.activeConditions[CONDITIONS.EXHAUSTION]) {
+                this.character.activeConditions[CONDITIONS.EXHAUSTION] = 0;
+                CONDITION_EFFECTS_END[CONDITIONS.EXHAUSTION]();
+            } else {
+                this.character.activeConditions[CONDITIONS.EXHAUSTION] = 1;
+                CONDITION_EFFECTS_START[CONDITIONS.EXHAUSTION](1);
+            }
+        } else {
+            this.character.activeConditions[conditionName] = !this.character.activeConditions[conditionName];
+            if(this.character.activeConditions[conditionName]){
+                CONDITION_EFFECTS_START[conditionName]();
+            }
+            else{
+                CONDITION_EFFECTS_END[conditionName]();
+            }
         }
         this._publish(DATA_MANAGER_FIELDS.ACTIVE_CONDITIONS, {...this.character.activeConditions});
+        this.persistCharacter();
     }
     getActiveConditions(){
-        return Object.keys(this.character.activeConditions).filter(cond => this.character.activeConditions[cond]);
+        return Object.keys(this.character.activeConditions).filter(cond => {
+            if(cond === CONDITIONS.EXHAUSTION) {
+                return this.character.activeConditions[cond] > 0;
+            }
+            return this.character.activeConditions[cond];
+        });
     }
     publishActionsAvailable(actions){
         this._publish(DATA_MANAGER_FIELDS.ACTIONS_AVAILABLE, {...actions});
@@ -297,7 +329,20 @@ class DataManager{
         this._publish(DATA_MANAGER_FIELDS.SPEED, this.getSpeed());
     }
 
+    overwriteMaxHP(newMaxHP) {
+        this.character.overwrittenMaxHP = newMaxHP;
+        this._publish(DATA_MANAGER_FIELDS.CURRENT_HIT_POINTS, this.getHitPointMax());
+        this.persistCharacter();
+    }
+    resetOverwriteMaxHP() {
+        delete this.character.overwrittenMaxHP;
+        this._publish(DATA_MANAGER_FIELDS.CURRENT_HIT_POINTS, this.getHitPointMax());
+        this.persistCharacter();
+    }
     getHitPointMax(){
+        if (typeof this.character.overwrittenMaxHP === 'number') {
+            return this.character.overwrittenMaxHP;
+        }
         return this.character.baseChar.leveling
             .map(classLevel => classLevel.hitPointIncrease)
             .reduce((result, hitPointIncrease) => result + hitPointIncrease, 0)

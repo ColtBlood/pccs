@@ -63,6 +63,21 @@ class ActiveConditions extends HTMLElement{
                     cursor: pointer;
                     margin-left: 5px;
                 }
+                .exhaustion-controls {
+                    display: inline-flex;
+                    align-items: center;
+                    margin-left: 10px;
+                }
+                .exhaustion-btn {
+                    width: 20px;
+                    height: 20px;
+                    margin: 0 2px;
+                    text-align: center;
+                    background: #ccc;
+                    border-radius: 3px;
+                    cursor: pointer;
+                    font-size: 14px;
+                }
                 
                 ${buttonBoxes()}
             </style>
@@ -71,6 +86,23 @@ class ActiveConditions extends HTMLElement{
                     ${dm.getActiveConditions().map(cond => {
                         const infoId = `condition-info-${cond}`;
                         mapping.push({id: infoId, funct: () => {this.openConditionInfoBoxPopup(cond)}});
+                        if(cond === CONDITIONS.EXHAUSTION) {
+                            const exhaustionLevel = dm.getExhaustionLevel ? dm.getExhaustionLevel() : 1;
+                            const incId = 'exhaustion-inc';
+                            const decId = 'exhaustion-dec';
+                            mapping.push({id: incId, funct: () => {this.changeExhaustionLevel(exhaustionLevel + 1)}});
+                            mapping.push({id: decId, funct: () => {this.changeExhaustionLevel(exhaustionLevel - 1)}});
+                            return `
+                            <li class="medium-text padding5 uppercase">
+                                exhaustion (level ${exhaustionLevel})
+                                <span class="exhaustion-controls">
+                                    <span class="exhaustion-btn" id="${decId}">-</span>
+                                    <span class="exhaustion-btn" id="${incId}">+</span>
+                                </span>
+                                <span class="info-button" id="${infoId}">?</span>
+                            </li>
+                            `
+                        }
                         return `
                         <li class="medium-text padding5 uppercase">
                             ${cond.toLowerCase()}
@@ -135,6 +167,11 @@ class ActiveConditions extends HTMLElement{
             `,
             mainAction: defaultCloseAction
         })
+    }
+    changeExhaustionLevel(newLevel) {
+        if(newLevel < 1) newLevel = 1;
+        if(newLevel > 6) newLevel = 6;
+        dm.setExhaustionLevel(newLevel);
     }
 
 }
