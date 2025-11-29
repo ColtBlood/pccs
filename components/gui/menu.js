@@ -32,7 +32,10 @@ class PccsMenu extends HTMLElement{
             return {
                 id: key,
                 itemText: `- ${key}`,
-                funct: () => window.location = '?character=' + encodeURIComponent(key),
+                funct: () => {
+                    window.sessionStorage.setItem('character', key);
+                    window.location.reload();
+                },
             }
         })
     ]

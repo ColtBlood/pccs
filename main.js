@@ -15,8 +15,8 @@ class PccsApp extends HTMLElement{
         window.pccs = {};
         ds.onReady(() => {
 
-            const urlParams = new URLSearchParams(window.location.search);
-            const characterName = urlParams.get('character') || 'Sir Dixon Fire';
+            // Get character name from session storage, fallback to default
+            const characterName = window.sessionStorage.getItem('character') || 'Sir Dixon Fire';
 
 
             // ds.loadCharacter('Layden Fantail', (storedChar) => {
