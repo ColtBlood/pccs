@@ -55,7 +55,12 @@ export const RANGE = {
     FEET90: '90 feet',
     FEET120: '120 feet',
     FEET150: '150 feet',
-    SELF: 'Self'
+    FEET300: '300 feet',
+    MILES1: '1 mile',
+    MILES6: '6 miles',
+    MILES12: '12 miles',
+    SELF: 'Self',
+    SIGHT: 'Sight',
 }
 export const DURATION = {
     ONE_MINUTE: 'up to 1 minute',
@@ -63,6 +68,9 @@ export const DURATION = {
     ONE_HOUR: 'up to 1 hour',
     INSTANTANEOUS: 'Instantaneous',
     ONE_ROUND: '1 round',
+    HOURS8: '8 hours',
+    HOURS24: '24 hours',
+    DAYS1: '1 day',
     DAYS7: '7 days',
     DAYS10: '10 days',
 }

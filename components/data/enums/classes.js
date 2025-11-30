@@ -2,7 +2,7 @@ import {STATS} from "./stats.js";
 import {
     ArmorClassEnhancer,
     ArmorTrait,
-    BaseEnhancer,
+    BaseEnhancer, BaseSelectableEnhancer,
     Enhancer,
     InitiativeEnhancer, PassivePerceptionEnhancer,
     SkillCheckEnhancer
@@ -104,7 +104,7 @@ export class SkillUnarmoredDefense extends BaseEnhancer{
 export class JackOfAllTradesEnhancer extends BaseEnhancer {
     constructor() {
         super(SkillCheckEnhancer, InitiativeEnhancer, PassivePerceptionEnhancer);
-        this.description = 'Bard: Jack of All Trades - Add half your proficiency bonus, rounded down, to any ability check you make that doesn\'t already include your proficiency bonus.'
+        this.description = 'Jack of All Trades - Add half your proficiency bonus, rounded down, to any ability check you make that doesn\'t already include your proficiency bonus.'
     }
 
     _enhancement({value, isProficient, isExpert}) {
@@ -118,6 +118,16 @@ export class JackOfAllTradesEnhancer extends BaseEnhancer {
     enhanceInitiative = this._enhancement;
     enhancePassivePerception = this._enhancement;
 }
+
+class BardSilverTongueEnhancer extends BaseSelectableEnhancer {
+    constructor() {
+        super(SkillCheckEnhancer);
+        this.forced = true;
+        this.description = 'Silver Tongue - When you make a Charisma (Persuasion) or Charisma (Deception) check, you can treat a d20 roll of 9 or lower as a 10.';
+    }
+}
+
+const bardSilverTongueEnhancer = new BardSilverTongueEnhancer();
 
 export class BardClass extends DndClassBase {
     constructor() {
@@ -133,7 +143,7 @@ export class BardClass extends DndClassBase {
         if(level >= 3){
             dm.addExpertise(SKILLS.PERSUASION);
             dm.addExpertise(SKILLS.INTIMIDATION);
-            // choose two skills
+            Enhancer.getInstance().registerEnhancer(bardSilverTongueEnhancer);
         }
     }
 }
