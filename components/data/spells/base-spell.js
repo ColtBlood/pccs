@@ -33,6 +33,7 @@ export const CAST_TIME = {
     BONUS_ACTION: '1 Bonus Action',
     REACTION: '1 Reaction',
     MINUTE1: '1 Minute',
+    MINUTES10: '10 Minute',
 }
 export const COMPONENTS = {
     VERBAL: 'V',
