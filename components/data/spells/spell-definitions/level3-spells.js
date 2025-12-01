@@ -1,4 +1,4 @@
-import {BaseSpell, COMPONENTS, DURATION, RANGE, SPELL_LEVEL} from "../base-spell.js";
+import {BaseSpell, CAST_TIME, COMPONENTS, DURATION, RANGE, SPELL_LEVEL} from "../base-spell.js";
 import {CLASSES} from "../../enums/classes.js";
 
 export class SpellAnimateDead extends BaseSpell{
@@ -157,6 +157,229 @@ Any ranged weapon attack that enters the wall’s space has disadvantage on the 
             range: RANGE.FEET60,
             concentration: true,
             duration: DURATION.MINUTES10,
+        });
+    }
+}
+
+export class SpellMeldIntoStone extends BaseSpell {
+    constructor() {
+        super({
+            spellName: "Meld into Stone",
+            description: `
+            You step into a stone object or surface large enough to fully contain your body, melding yourself and all the equipment you carry with the stone for the duration. Using your movement, you step into the stone at a point you can touch. Nothing of your presence remains visible or otherwise detectable by nonmagical senses.
+<br />
+<br />While merged with the stone, you can’t see what occurs outside it, and any Wisdom (Perception) checks you make to hear sounds outside it are made with disadvantage. You remain aware of the passage of time and can cast spells on yourself while merged in the stone. You can use your movement to leave the stone where you entered it, which ends the spell. You otherwise can’t move.
+<br />
+<br />Minor physical damage to the stone doesn’t harm you, but its partial destruction or a change in its shape (to the extent that you no longer fit within it) expels you and deals 6d6 bludgeoning damage to you. The stone’s complete destruction (or transmutation into a different substance) expels you and deals 50 bludgeoning damage to you. If expelled, you fall prone in an unoccupied space closest to where you first entered.
+            `,
+            spellLevel: SPELL_LEVEL.LEVEL_3,
+            components: COMPONENTS.VS(),
+            classes: [CLASSES.DRUID, CLASSES.CLERIC],
+            range: RANGE.TOUCH,
+            duration: DURATION.HOURS8,
+        });
+    }
+}
+
+export class SpellPlantGrowth extends BaseSpell {
+    constructor() {
+        super({
+            spellName: "Plant Growth",
+            description: `This spell channels vitality into plants within a specific area. There are two possible uses for the spell, granting either immediate or long-term benefits.
+<br />
+<br />If you cast this spell using 1 action, choose a point within range. All normal plants in a 100-foot radius centered on that point become thick and overgrown. A creature moving through the area must spend 4 feet of movement for every 1 foot it moves.
+<br />
+<br />You can exclude one or more areas of any size within the spell’s area from being affected.
+<br />
+<br />If you cast this spell over 8 hours, you enrich the land. All plants in a half-mile radius centered on a point within range become enriched for 1 year. The plants yield twice the normal amount of food when harvested.`,
+            spellLevel: SPELL_LEVEL.LEVEL_3,
+            components: COMPONENTS.VS(),
+            classes: [CLASSES.DRUID, CLASSES.RANGER, CLASSES.BARD],
+            range: RANGE.FEET150,
+            castingTime: CAST_TIME.ACTION
+        });
+    }
+}
+
+export class SpellProtectionFromEnergy extends BaseSpell {
+    constructor() {
+        super({
+            spellName: "Protection from Energy",
+            description: `For the duration, the willing creature you touch has resistance to one damage type of your choice: acid, cold, fire, lightning, or thunder.`,
+            spellLevel: SPELL_LEVEL.LEVEL_3,
+            components: COMPONENTS.VS(),
+            classes: [CLASSES.DRUID, CLASSES.RANGER, CLASSES.ARTIFICER, CLASSES.CLERIC, CLASSES.SORCERER, CLASSES.WIZARD],
+            range: RANGE.TOUCH,
+            duration: DURATION.ONE_HOUR,
+            concentration: true,
+        });
+    }
+}
+
+export class SpellSleetStorm extends BaseSpell {
+    constructor() {
+        super({
+            spellName: "Sleet Storm",
+            description: `
+            Until the spell ends, freezing rain and sleet fall in a 20-foot-tall cylinder with a 40-foot radius centered on a point you choose within range. The area is heavily obscured, and exposed flames in the area are doused.
+<br />
+<br />The ground in the area is covered with slick ice, making it difficult terrain. When a creature enters the spell’s area for the first time on a turn or starts its turn there, it must make a Dexterity saving throw. On a failed save, it falls prone.
+<br />
+<br />If a creature starts its turn in the spell's area and is concentrating on a spell, the creature must make a successful Constitution saving throw against your spell save DC or lose concentration.
+            `,
+            spellLevel: SPELL_LEVEL.LEVEL_3,
+            components: COMPONENTS.VSM(),
+            componentMaterial: 'a pinch of dust and a few drops of water',
+            classes: [CLASSES.DRUID, CLASSES.WIZARD, CLASSES.SORCERER],
+            range: RANGE.FEET150,
+            duration: DURATION.ONE_MINUTE,
+            concentration: true,
+        });
+    }
+}
+
+export class SpellSpeakWithPlants extends BaseSpell {
+    constructor() {
+        super({
+            spellName: "Speak with Plants",
+            description: `
+            You imbue plants within 30 feet of you with limited sentience and animation, giving them the ability to communicate with you and follow your simple commands. You can question plants about events in the spell’s area within the past day, gaining information about creatures that have passed, weather, and other circumstances.
+<br />
+<br />You can also turn difficult terrain caused by plant growth (such as thickets and undergrowth) into ordinary terrain that lasts for the duration. Or you can turn ordinary terrain where plants are present into difficult terrain that lasts for the duration, causing vines and branches to hinder pursuers, for example.
+<br />
+<br />Plants might be able to perform other tasks on your behalf, at the DM’s discretion. The spell doesn’t enable plants to uproot themselves and move about, but they can freely move branches, tendrils, and stalks.
+<br />
+<br />If a plant creature is in the area, you can communicate with it as if you share a common language, but you gain no magical ability to influence it.
+<br />
+<br />This spell can cause the plants created by the entangle spell to release a restrained creature.
+            `,
+            spellLevel: SPELL_LEVEL.LEVEL_3,
+            components: COMPONENTS.VS(),
+            classes: [CLASSES.BARD, CLASSES.DRUID, CLASSES.RANGER],
+            range: `${RANGE.SELF} (30-foot radius)`,
+            duration: DURATION.MINUTES10,
+        });
+    }
+}
+
+export class SpellWaterBreathing extends BaseSpell {
+    constructor() {
+        super({
+            spellName: "Water Breathing",
+            description: `This spell grants up to ten willing creatures you can see within range the ability to breathe underwater until the spell ends. Affected creatures also retain their normal mode of respiration.`,
+            spellLevel: SPELL_LEVEL.LEVEL_3,
+            components: COMPONENTS.VSM(),
+            componentMaterial: 'a short reed or piece of straw',
+            classes: [CLASSES.ARTIFICER, CLASSES.DRUID, CLASSES.RANGER, CLASSES.SORCERER, CLASSES.WIZARD],
+            range: RANGE.FEET30,
+            duration: DURATION.HOURS24,
+            isRitual: true,
+        });
+    }
+}
+
+export class SpellWaterWalk extends BaseSpell {
+    constructor() {
+        super({
+            spellName: "Water Walk",
+            description: `This spell grants the ability to move across any liquid surface – such as water, acid, mud, snow, quicksand, or lava – as if it were harmless solid ground (creatures crossing molten lava can still take damage from the heat). Up to ten willing creatures you can see within range gain this ability for the duration.
+<br />
+<br />If you target a creature submerged in a liquid, the spell carries the target to the surface of the liquid at a rate of 60 feet per round.`,
+            spellLevel: SPELL_LEVEL.LEVEL_3,
+            components: COMPONENTS.VSM(),
+            componentMaterial: 'a piece of cork',
+            classes: [CLASSES.ARTIFICER, CLASSES.CLERIC, CLASSES.DRUID, CLASSES.RANGER, CLASSES.SORCERER],
+            range: RANGE.FEET30,
+            duration: DURATION.ONE_HOUR,
+        });
+    }
+}
+
+export class SpellWindWall extends BaseSpell {
+    constructor() {
+        super({
+            spellName: "Wind Wall",
+            description: `
+            A wall of strong wind rises from the ground at a point you choose within range. You can make the wall up to 50 feet long, 15 feet high, and 1 foot thick. You can shape the wall in any way you choose so long as it makes one continuous path along the ground. The wall lasts for the duration.
+<br />
+<br />When the wall appears, each creature within its area must make a Strength saving throw. A creature takes 3d8 bludgeoning damage on a failed save, or half as much damage on a successful one.
+<br />
+<br />The strong wind keeps fog, smoke, and other gases at bay. Small or smaller flying creatures or objects can’t pass through the wall. Loose, lightweight materials brought into the wall fly upward. Arrows, bolts, and other ordinary projectiles launched at targets behind the wall are deflected upward and automatically miss. (Boulders hurled by giants or siege engines, and similar projectiles, are unaffected.) Creatures in gaseous form can’t pass through it.
+            `,
+            spellLevel: SPELL_LEVEL.LEVEL_3,
+            components: COMPONENTS.VSM(),
+            componentMaterial: 'a tiny fan and a feather of exotic origin',
+            classes: [CLASSES.DRUID, CLASSES.RANGER],
+            range: RANGE.FEET120,
+            duration: DURATION.ONE_MINUTE,
+            concentration: true,
+        });
+    }
+}
+
+export class SpellEruptingEarth extends BaseSpell {
+    constructor() {
+        super({
+            spellName: "Erupting Earth",
+            description: `Choose a point you can see on the ground within range. A fountain of churned earth and stone erupts in a 20-foot cube centered on that point. Each creature in that area must make a Dexterity saving throw. A creature takes 3d12 bludgeoning damage on a failed save, or half as much damage on a successful one. Additionally, the ground in that area becomes difficult terrain until cleared away. Each 5-foot-square portion of the area requires at least 1 minute to clear by hand.`,
+            upcastDescription: `When you cast this spell using a spell slot of 4th level or higher, the damage increases by 1d12 for each slot level above 3rd.`,
+            spellLevel: SPELL_LEVEL.LEVEL_3,
+            components: COMPONENTS.VSM(),
+            componentMaterial: 'a piece of obsidian',
+            classes: [CLASSES.DRUID, CLASSES.SORCERER, CLASSES.WIZARD],
+            range: RANGE.FEET120,
+            duration: DURATION.INSTANTANEOUS,
+        });
+    }
+}
+
+export class SpellFeignDeath extends BaseSpell {
+    constructor() {
+        super({
+            spellName: "Feign Death",
+            description: `
+            You touch a willing creature and put it into a cataleptic state that is indistinguishable from death.
+<br />
+<br />For the spell’s duration, or until you use an action to touch the target and dismiss the spell, the target appears dead to all outward inspection and to spells used to determine the target’s status. The target is blinded and incapacitated, and its speed drops to 0. The target has resistance to all damage except psychic damage. If the target is diseased or poisoned when you cast the spell, or becomes diseased or poisoned while under the spell’s effect, the disease and poison have no effect until the spell ends.
+            `,
+            spellLevel: SPELL_LEVEL.LEVEL_3,
+            components: COMPONENTS.VSM(),
+            componentMaterial: 'a pinch of graveyard dirt',
+            classes: [CLASSES.BARD, CLASSES.CLERIC, CLASSES.DRUID, CLASSES.WIZARD],
+            range: RANGE.TOUCH,
+            duration: DURATION.ONE_HOUR,
+            isRitual: true,
+        });
+    }
+}
+
+export class SpellTidalWave extends BaseSpell {
+    constructor() {
+        super({
+            spellName: "Tidal Wave",
+            description: `You conjure up a wave of water that crashes down on an area within range. The area can be up to 30 feet long, up to 10 feet wide, and up to 10 feet tall. Each creature in that area must make a Dexterity saving throw. On a failure, a creature takes 4d8 bludgeoning damage and is knocked prone. On a success, a creature takes half as much damage and isn’t knocked prone. The water then spreads out across the ground in all directions, extinguishing unprotected flames in its area and within 30 feet of it.`,
+            spellLevel: SPELL_LEVEL.LEVEL_3,
+            components: COMPONENTS.VSM(),
+            componentMaterial: 'a drop of water',
+            classes: [CLASSES.DRUID, CLASSES.SORCERER, CLASSES.WIZARD],
+            range: RANGE.FEET120,
+            duration: DURATION.INSTANTANEOUS,
+        });
+    }
+}
+
+export class SpellFlameArrows extends BaseSpell {
+    constructor() {
+        super({
+            spellName: "Flame Arrows",
+            description: `You touch a quiver containing arrows or bolts. When a target is hit by a ranged weapon attack using a piece of ammunition drawn from the quiver, the target takes an extra 1d6 fire damage. The spell’s magic ends on the piece of ammunition when it hits or misses, and the spell ends when twelve pieces of ammunition have been drawn from the quiver.`,
+            upcastDescription: `When you cast this spell using a spell slot of 4th level or higher, the number of pieces of ammunition you can affect with this spell increases by two for each slot level above 3rd.`,
+            spellLevel: SPELL_LEVEL.LEVEL_3,
+            components: COMPONENTS.VS(),
+            classes: [CLASSES.DRUID, CLASSES.RANGER, CLASSES.SORCERER, CLASSES.WIZARD, CLASSES.ARTIFICER],
+            range: RANGE.TOUCH,
+            duration: DURATION.ONE_HOUR,
+            concentration: true,
         });
     }
 }
