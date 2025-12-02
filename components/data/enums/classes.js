@@ -39,6 +39,9 @@ class DndClassBase {
     spellList = [];
     spellCasterWeight = ''; // full or half caster for spell slot calc
     subClasses = [];
+    getMaxKnownSpells(){
+        return 0;
+    }
 }
 
 
@@ -130,10 +133,45 @@ class BardSilverTongueEnhancer extends BaseSelectableEnhancer {
 const bardSilverTongueEnhancer = new BardSilverTongueEnhancer();
 
 export class BardClass extends DndClassBase {
+    spellCasterWeight = 'full';
     constructor() {
         super();
         this.mainStat = STATS.CHARISMA;
         this.hitDice = 'd8'
+    }
+
+    getMaxKnownSpells({levelsInClass}) {
+        let maxKnownSpells = 4;
+        if(levelsInClass < 10){
+            maxKnownSpells += levelsInClass-1;
+        }
+        else{
+            maxKnownSpells += 8;
+        }
+
+        if(levelsInClass >= 10){
+            maxKnownSpells += 2;
+        }
+        if(levelsInClass >= 11){
+            maxKnownSpells += 1;
+        }
+        if(levelsInClass >= 13){
+            maxKnownSpells += 1;
+        }
+        if(levelsInClass >= 14){
+            maxKnownSpells += 2;
+        }
+        if(levelsInClass >= 15){
+            maxKnownSpells += 1;
+        }
+        if(levelsInClass >= 17){
+            maxKnownSpells += 1;
+        }
+        if(levelsInClass >= 18){
+            maxKnownSpells += 2;
+        }
+
+        return maxKnownSpells;
     }
 
     decorateClassImprovements(level) {
@@ -155,6 +193,10 @@ export class ClericClass extends DndClassBase {
         this.hitDice = 'd8'
     }
 
+    getMaxKnownSpells({levelsInClass}) {
+        return levelsInClass + dm.getStatModifier(STATS.WISDOM);
+    }
+
     decorateClassImprovements(level) {
     }
 }
@@ -166,6 +208,10 @@ export class DruidClass extends DndClassBase {
         super();
         this.mainStat = STATS.WISDOM;
         this.hitDice = 'd8'
+    }
+
+    getMaxKnownSpells({levelsInClass}) {
+        return levelsInClass + dm.getStatModifier(STATS.WISDOM);
     }
 
     decorateClassImprovements(level){

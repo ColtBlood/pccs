@@ -415,8 +415,12 @@ class DataManager{
     }
 
     getMaxAmountOfPreparedSpellAmount(){
-        // TODO: hardcoded for druids for now
-        return this.getAllCharacterLevels()[CLASSES.DRUID] + this.getStatModifier(STATS.WISDOM);
+        const allCharLevels = this.getAllCharacterLevels();
+        return Object.keys(allCharLevels)
+            .map(clazz =>
+                CLAZZ_2_CLASS_MAP[clazz]
+                    .getMaxKnownSpells({levelsInClass: allCharLevels[clazz]}))
+            .reduce((a,b) => a + b, 0);
     }
 
     getSpellConcentration(){
