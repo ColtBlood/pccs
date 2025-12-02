@@ -1,4 +1,4 @@
-import {BaseEnhancer, PassivePerceptionEnhancer} from "../enhancements/enhancer.js";
+import {BaseEnhancer, Enhancer, PassivePerceptionEnhancer} from "../enhancements/enhancer.js";
 
 export class FeatObservantEnhancer extends BaseEnhancer{
     constructor() {
@@ -19,7 +19,9 @@ export class FeatObservant{
 
     register(builder){
         builder.setStat({stat:this.asi, value:builder.getStat(this.asi)+1});
-        builder.addEnhancer(new FeatObservantEnhancer())
+    }
+    load(){
+        Enhancer.getInstance().registerEnhancer(new FeatObservantEnhancer())
     }
 }
 
@@ -61,4 +63,10 @@ You gain proficiency in saving throws using the chosen ability.
         builder.setStat({stat:this.asi, value:builder.getStat(this.asi)+1});
         builder.addProficiency(this.asi);
     }
+}
+
+export const FEATS_CATALOG = {
+    'FeatObservant': FeatObservant,
+    'FeatSkillExpert': FeatSkillExpert,
+    'FeatResilient': FeatResilient,
 }

@@ -24,6 +24,10 @@ export class Enhancer{
     }
 
     enhance(clazz, input){
+        if(clazz === PassivePerceptionEnhancer){
+            console.log('enhancing passive perception');
+            console.log(this.getEnhancersByClass(clazz));
+        }
         this.getEnhancersByClass(clazz)
             .forEach((enhancer) => {
                     input.value = enhancer[BaseEnhancer.enhancerTypes[clazz].method](input);

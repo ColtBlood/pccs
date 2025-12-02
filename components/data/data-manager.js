@@ -11,6 +11,7 @@ import {SPELL_LEVEL} from "./spells/base-spell.js";
 import {CLASSES, CLAZZ_2_CLASS_MAP} from "./enums/classes.js";
 import {FULL_SPELL_LIST} from "./spells/spells.js";
 import {EQUIPMENT_CATALOG} from "./equipment";
+import {FEATS_CATALOG} from "./preload/feat.js";
 import {CONDITION_EFFECTS_END, CONDITION_EFFECTS_START, CONDITIONS} from "./conditions/base-condition.js";
 import {ACTION_MANAGER} from "./actions/action-manager.js";
 
@@ -67,7 +68,8 @@ class DataManager{
                 expertise: []
             },
             leveling: [],
-            equipment: [] // Add equipment array to character model
+            equipment: [], // Add equipment array to character model
+            feats: []
         },
         activeConditions: {
 
@@ -123,6 +125,13 @@ class DataManager{
             console.log(`Equipping item from load: ${item}`);
             EQUIPMENT_CATALOG[item].equip();
         })
+
+        this.character.baseChar.feats?.forEach(item => {
+            console.log(`Feats from load: ${item.name}`);
+            const feat = new FEATS_CATALOG[item.name](item.params);
+            if(feat.load) feat.load();
+        })
+
         ACTION_MANAGER.resetActionsAvailable()
         this.character.currentHitPoints = this.getHitPointMax();
         this.character.temporaryHitPoints = 0;

@@ -3,6 +3,7 @@ import {CLASSES, CLAZZ_2_CLASS_MAP} from "../enums/classes.js";
 import {STATS} from "../enums/stats.js";
 import {SKILLS} from "../enums/skills.js";
 import {Enhancer} from "../enhancements/enhancer.js";
+import {FEATS_CATALOG} from "../preload/feat.js";
 
 class Character {
     baseChar= {
@@ -13,7 +14,8 @@ class Character {
             expertise: [],
         },
         leveling: [],
-        equipment: [] // Add equipment array to character model
+        equipment: [], // Add equipment array to character model
+        feats: [],
     }
 }
 
@@ -107,15 +109,9 @@ export class CharacterBuilder{
         return this;
     }
 
-    addEnhancer(enhancer){
-        if (!this._pendingEnhancers) this._pendingEnhancers = [];
-        this._pendingEnhancers.push(enhancer);
-        return this;
-    }
-
-    addFeat(feat){
-        if (!this._pendingFeats) this._pendingFeats = [];
-        this._pendingFeats.push(feat);
+    addFeat(feat = {name, params}){
+        this.char.baseChar.feats.push(feat);
+        new FEATS_CATALOG[feat.name](feat.params).register(this);
         return this;
     }
 
@@ -125,18 +121,6 @@ export class CharacterBuilder{
     }
 
     build(){
-        if (this._pendingEnhancers && this._pendingEnhancers.length > 0) {
-            this._pendingEnhancers.forEach(enhancer => {
-                Enhancer.getInstance().registerEnhancer(enhancer);
-            });
-            this._pendingEnhancers = [];
-        }
-        if (this._pendingFeats && this._pendingFeats.length > 0) {
-            this._pendingFeats.forEach(feat => {
-                feat.register(this);
-            });
-            this._pendingFeats = [];
-        }
         return this.char;
     }
 }
