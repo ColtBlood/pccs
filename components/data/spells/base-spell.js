@@ -34,6 +34,8 @@ export const CAST_TIME = {
     REACTION: '1 Reaction',
     MINUTE1: '1 Minute',
     MINUTES10: '10 Minute',
+    HOURS1: '1 Hour',
+    HOURS8: '8 Hours',
 }
 export const COMPONENTS = {
     VERBAL: 'V',
@@ -77,6 +79,8 @@ export const DURATION = {
     DAYS1: '1 day',
     DAYS7: '7 days',
     DAYS10: '10 days',
+    DAYS30: '30 days',
+    UNTIL_DISPELLED: 'Until dispelled',
 }
 
 
@@ -188,6 +192,7 @@ export class BaseSpell{
         Object.keys(defaultConfig).forEach(key => {
             // console.log(`[${this.constructor.name}] Property '${key}'`);
             if (receivedConfig[key] && receivedConfig[key] === defaultConfig[key]) {
+                // logging default config so to decrease written code
                 console.log(`[${this.constructor.name}] Property '${key}' containts default values ${receivedConfig[key]} (duplicate code).`);
             }
             if(!receivedConfig[key]) {
